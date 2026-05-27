@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Salsas — Chamberí Brothers</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-2: #f7f7f5;
+      --bg-3: #f0efea;
+      --border: #e5e4de;
+      --border-2: #d0cfc8;
+      --text: #1a1a18;
+      --text-2: #6b6b63;
+      --text-3: #9e9d94;
+      --accent: #e85d2f;
+      --accent-bg: #fef2ed;
+      --amber: #d97706;
+      --amber-bg: #fffbeb;
+      --teal: #0d9488;
+      --teal-bg: #f0fdfa;
+      --blue: #2563eb;
+      --blue-bg: #eff6ff;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 24px 20px 40px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .header-sub {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-top: 1px;
+    }
+
+    .last-updated {
+      font-size: 11px;
+      color: var(--text-3);
+      text-align: right;
+    }
+
+    /* Sauce selector */
+    .sauce-selector {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .sauce-btn {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 6px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .sauce-btn:hover {
+      background: var(--bg-3);
+      border-color: var(--border-2);
+    }
+
+    .sauce-btn.active {
+      background: var(--accent-bg);
+      border-color: var(--accent);
+      border-width: 1.5px;
+    }
+
+    .sauce-btn-icon {
+      font-size: 20px;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .sauce-btn-name {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-2);
+      line-height: 1.3;
+    }
+
+    .sauce-btn.active .sauce-btn-name {
+      color: var(--accent);
+    }
+
+    /* Main card */
+    .main-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    /* Card header */
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-2);
+    }
+
+    .card-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sauce-name-big {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 9px;
+      border-radius: 100px;
+      letter-spacing: 0.01em;
+    }
+
+    .badge-clasica { background: var(--amber-bg); color: var(--amber); border: 1px solid #fcd34d; }
+    .badge-picante { background: var(--accent-bg); color: var(--accent); border: 1px solid #fca5a5; }
+    .badge-especial { background: var(--teal-bg); color: var(--teal); border: 1px solid #5eead4; }
+
+    /* Biberones control */
+    .bib-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bib-label {
+      font-size: 12px;
+      color: var(--text-3);
+    }
+
+    .bib-btn {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--text-2);
+      transition: background 0.1s;
+      line-height: 1;
+    }
+
+    .bib-btn:hover { background: var(--bg-3); }
+    .bib-btn:active { background: var(--border); }
+
+    .bib-val {
+      font-size: 20px;
+      font-weight: 600;
+      min-width: 28px;
+      text-align: center;
+      color: var(--text);
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stat-box {
+      padding: 14px 18px;
+      border-right: 1px solid var(--border);
+    }
+
+    .stat-box:last-child { border-right: none; }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .stat-value.highlight { color: var(--teal); }
+
+    /* Body grid */
+    .card-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .col-left {
+      padding: 18px 20px;
+      border-right: 1px solid var(--border);
+    }
+
+    .col-right {
+      padding: 18px 20px;
+    }
+
+    .col-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-3);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    /* Ingredient list */
+    .ing-list { width: 100%; }
+
+    .ing-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ing-row:last-child { border-bottom: none; }
+
+    .ing-name {
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .ing-qty {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-2);
+      text-align: right;
+    }
+
+    .ing-cost {
+      font-size: 11px;
+      color: var(--text-3);
+      text-align: right;
+      min-width: 48px;
+    }
+
+    .total-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 10px;
+      margin-top: 4px;
+      border-top: 1px solid var(--border-2);
+    }
+
+    .total-label { font-size: 12px; color: var(--text-2); font-weight: 500; }
+    .total-val { font-size: 13px; font-weight: 600; color: var(--text); }
+
+    /* Sensorial bars */
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .bar-row:last-child { margin-bottom: 0; }
+
+    .bar-label {
+      font-size: 12px;
+      color: var(--text-2);
+      width: 70px;
+      flex-shrink: 0;
+    }
+
+    .bar-track {
+      flex: 1;
+      height: 8px;
+      background: var(--bg-3);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .bar-score {
+      font-size: 11px;
+      color: var(--text-3);
+      min-width: 28px;
+      text-align: right;
+    }
+
+    /* Info boxes */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .info-box {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+    }
+
+    .info-box-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-3);
+      margin-bottom: 3px;
+    }
+
+    .info-box-val {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Notes */
+    .notes-section {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .notes-text {
+      font-size: 12px;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .sauce-selector { grid-template-columns: repeat(4, 1fr); }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .stat-box:nth-child(2) { border-right: none; }
+      .stat-box:nth-child(3) { border-top: 1px solid var(--border); }
+      .stat-box:nth-child(4) { border-top: 1px solid var(--border); }
+      .card-body { grid-template-columns: 1fr; }
+      .col-left { border-right: none; border-bottom: 1px solid var(--border); }
+    }
+
+    @media (max-width: 420px) {
+      .sauce-selector { grid-template-columns: repeat(4, 1fr); }
+      .sauce-btn-icon { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div>
+      <div class="header-title">🧪 Calculadora de Salsas</div>
+      <div class="header-sub">Chamberí Brothers — Laboratorio de Salsas</div>
+    </div>
+    <div class="last-updated">
+      Datos actualizados<br>mayo 2026
+    </div>
+  </div>
+
+  <div class="sauce-selector" id="sauce-selector"></div>
+
+  <div class="main-card">
+
+    <div class="card-header">
+      <div class="card-header-left">
+        <span class="sauce-name-big" id="h-name">—</span>
+        <span class="badge" id="h-badge"></span>
+      </div>
+      <div class="bib-control">
+        <span class="bib-label">Biberones</span>
+        <button class="bib-btn" onclick="adj(-1)" aria-label="Menos">−</button>
+        <span class="bib-val" id="bib-val">1</span>
+        <button class="bib-btn" onclick="adj(1)" aria-label="Más">+</button>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-label">Coste lote</div>
+        <div class="stat-value" id="s-cost">—</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Coste / litro</div>
+        <div class="stat-value" id="s-cpl">—</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Coste / burger</div>
+        <div class="stat-value highlight" id="s-cpb">—</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Burgers totales</div>
+        <div class="stat-value" id="s-bgt">—</div>
+      </div>
+    </div>
+
+    <div class="card-body">
+
+      <div class="col-left">
+        <div class="col-title">Ingredientes para el lote</div>
+        <div class="ing-list" id="ing-list"></div>
+        <div class="total-row">
+          <span class="total-label">Peso total</span>
+          <span class="total-val" id="total-wt">—</span>
+        </div>
+      </div>
+
+      <div class="col-right">
+        <div class="col-title">Perfil sensorial</div>
+        <div id="sensorial-bars"></div>
+
+        <div class="info-grid">
+          <div class="info-box">
+            <div class="info-box-label">Salsa por burger</div>
+            <div class="info-box-val" id="i-sxb">—</div>
+          </div>
+          <div class="info-box">
+            <div class="info-box-label">Caducidad</div>
+            <div class="info-box-val" id="i-cad">—</div>
+          </div>
+          <div class="info-box">
+            <div class="info-box-label">PVP salsero</div>
+            <div class="info-box-val" id="i-pvp">—</div>
+          </div>
+          <div class="info-box">
+            <div class="info-box-label">Tipo</div>
+            <div class="info-box-val" id="i-tipo">—</div>
+          </div>
+        </div>
+
+        <div class="notes-section">
+          <div class="col-title" style="margin-bottom:6px">Notas de producción</div>
+          <div class="notes-text" id="notes-text">—</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    Calculadora interna · Para actualizar datos editar el archivo index.html
+  </div>
+
+</div>
+
+<script>
+// ─── DATOS DE SALSAS ──────────────────────────────────────────────────────────
+// Cantidades expresadas por 1 biberón (1 L). Edita aquí para actualizar precios.
+const SALSAS = [
+  {
+    id: 'paletos',
+    emoji: '🤠',
+    nombre: 'Paletos Deluxe',
+    tipo: 'Clásica',
+    sxb: 35,        // gramos por burger
+    pvp: 0.99,      // PVP salsero (€/biberón)
+    cad: 7,         // caducidad en días
+    notas: 'Homogeneizar 3–4 min a velocidad media. Reposar 30 min en frío antes de envasar. Temp. servicio 4–8 ºC.',
+    sensorial: { Dulzor: 2, Acidez: 4, Picante: 1, Ahumado: 0, Umami: 3 },
+    ingredientes: [
+      { nombre: 'Mayonesa',        cantidad: 654.5, unidad: 'g',  costePorUnidad: 0.00251 },
+      { nombre: 'Ketchup',         cantidad: 100,   unidad: 'g',  costePorUnidad: 0.00160 },
+      { nombre: 'Mostaza',         cantidad: 50,    unidad: 'g',  costePorUnidad: 0.00300 },
+      { nombre: 'Vinagre',         cantidad: 30,    unidad: 'ml', costePorUnidad: 0.00200 },
+      { nombre: 'Azúcar',          cantidad: 20,    unidad: 'g',  costePorUnidad: 0.00100 },
+      { nombre: 'Limón en polvo',  cantidad: 10,    unidad: 'g',  costePorUnidad: 0.01000 },
+      { nombre: 'Ajo en polvo',    cantidad: 8,     unidad: 'g',  costePorUnidad: 0.01000 },
+      { nombre: 'Cebolla en polvo',cantidad: 8,     unidad: 'g',  costePorUnidad: 0.00800 },
+      { nombre: 'Mostaza en polvo',cantidad: 8,     unidad: 'g',  costePorUnidad: 0.01200 },
+      { nombre: 'Perejil seco',    cantidad: 5,     unidad: 'g',  costePorUnidad: 0.04000 },
+      { nombre: 'Pimienta negra',  cantidad: 3,     unidad: 'g',  costePorUnidad: 0.01600 },
+      { nombre: 'Glutamato',       cantidad: 3,     unidad: 'g',  costePorUnidad: 0.00600 },
+      { nombre: 'Agua',            cantidad: 50,    unidad: 'ml', costePorUnidad: 0.00000 },
+    ]
+  },
+  {
+    id: 'ranch',
+    emoji: '🌿',
+    nombre: 'Ranch Clásico',
+    tipo: 'Clásica',
+    sxb: 30,
+    pvp: 0.99,
+    cad: 7,
+    notas: 'Ajustar cantidad de agua según densidad deseada. La salsa espesa en frío. Reposar 30 min antes de envasar.',
+    sensorial: { Dulzor: 0, Acidez: 4, Picante: 0, Ahumado: 0, Umami: 2, Herbáceo: 5 },
+    ingredientes: [
+      { nombre: 'Mayonesa',        cantidad: 600,  unidad: 'g',  costePorUnidad: 0.00251 },
+      { nombre: 'Agua',            cantidad: 280,  unidad: 'ml', costePorUnidad: 0.00000 },
+      { nombre: 'Vinagre',         cantidad: 25,   unidad: 'ml', costePorUnidad: 0.00200 },
+      { nombre: 'Mostaza en polvo',cantidad: 10,   unidad: 'g',  costePorUnidad: 0.01200 },
+      { nombre: 'Ajo en polvo',    cantidad: 8,    unidad: 'g',  costePorUnidad: 0.01000 },
+      { nombre: 'Cebolla en polvo',cantidad: 8,    unidad: 'g',  costePorUnidad: 0.00800 },
+      { nombre: 'Limón en polvo',  cantidad: 6,    unidad: 'g',  costePorUnidad: 0.01000 },
+      { nombre: 'Perejil seco',    cantidad: 6,    unidad: 'g',  costePorUnidad: 0.04000 },
+      { nombre: 'Pimienta negra',  cantidad: 3,    unidad: 'g',  costePorUnidad: 0.01600 },
+    ]
+  },
+  {
+    id: 'bbq',
+    emoji: '🔥',
+    nombre: 'BBQ Ahumada',
+    tipo: 'Clásica',
+    sxb: 35,
+    pvp: 0.99,
+    cad: 10,
+    notas: 'El ahumado se intensifica con el reposo — validar perfil al día siguiente. Opcional: calentar a 60 ºC 5 min para potenciar el ahumado.',
+    sensorial: { Dulzor: 5, Acidez: 3, Picante: 1, Ahumado: 7, Umami: 5 },
+    ingredientes: [
+      { nombre: 'Ketchup',           cantidad: 600, unidad: 'g',  costePorUnidad: 0.00160 },
+      { nombre: 'Agua',              cantidad: 150, unidad: 'ml', costePorUnidad: 0.00000 },
+      { nombre: 'Vinagre',           cantidad: 80,  unidad: 'ml', costePorUnidad: 0.00200 },
+      { nombre: 'Azúcar',            cantidad: 60,  unidad: 'g',  costePorUnidad: 0.00100 },
+      { nombre: 'Pimentón ahumado',  cantidad: 20,  unidad: 'g',  costePorUnidad: 0.00300 },
+      { nombre: 'Mostaza en polvo',  cantidad: 10,  unidad: 'g',  costePorUnidad: 0.01200 },
+      { nombre: 'Ajo en polvo',      cantidad: 8,   unidad: 'g',  costePorUnidad: 0.01000 },
+      { nombre: 'Cebolla en polvo',  cantidad: 8,   unidad: 'g',  costePorUnidad: 0.00800 },
+      { nombre: 'Pimienta negra',    cantidad: 3,   unidad: 'g',  costePorUnidad: 0.01600 },
+      { nombre: 'Glutamato',         cantidad: 3,   unidad: 'g',  costePorUnidad: 0.00600 },
+    ]
+  },
+  {
+    id: 'buffalo',
+    emoji: '⚡',
+    nombre: 'Buffalo Mayo',
+    tipo: 'Picante',
+    sxb: 30,
+    pvp: 0.99,
+    cad: 7,
+    notas: 'El picante de la cayena evoluciona en reposo. Validar intensidad tras 24 h antes de aprobar lote. Ajustar cayena según producción.',
+    sensorial: { Dulzor: 1, Acidez: 5, Picante: 6, Ahumado: 0, Umami: 2 },
+    ingredientes: [
+      { nombre: 'Mayonesa',        cantidad: 650, unidad: 'g',  costePorUnidad: 0.00251 },
+      { nombre: 'Vinagre',         cantidad: 100, unidad: 'ml', costePorUnidad: 0.00200 },
+      { nombre: 'Mostaza',         cantidad: 40,  unidad: 'g',  costePorUnidad: 0.00300 },
+      { nombre: 'Agua',            cantidad: 80,  unidad: 'ml', costePorUnidad: 0.00000 },
+      { nombre: 'Cayena en polvo', cantidad: 12,  unidad: 'g',  costePorUnidad: 0.00800 },
+      { nombre: 'Ajo en polvo',    cantidad: 10,  unidad: 'g',  costePorUnidad: 0.01000 },
+      { nombre: 'Azúcar',          cantidad: 15,  unidad: 'g',  costePorUnidad: 0.00100 },
+      { nombre: 'Pimienta negra',  cantidad: 5,   unidad: 'g',  costePorUnidad: 0.01600 },
+    ]
+  },
+  {
+    id: 'sriracha',
+    emoji: '🌶',
+    nombre: 'Sriracha Mayo',
+    tipo: 'Picante',
+    sxb: 30,
+    pvp: 0.99,
+    cad: 7,
+    notas: 'Calibrar ratio mayo/sriracha en primera producción — el picante varía por marca. Reposar 20 min antes de envasar.',
+    sensorial: { Dulzor: 2, Acidez: 4, Picante: 5, Ahumado: 0, Umami: 3 },
+    ingredientes: [
+      { nombre: 'Mayonesa',       cantidad: 700, unidad: 'g',  costePorUnidad: 0.00251 },
+      { nombre: 'Sriracha',       cantidad: 230, unidad: 'ml', costePorUnidad: 0.00700 },
+      { nombre: 'Ajo en polvo',   cantidad: 8,   unidad: 'g',  costePorUnidad: 0.01000 },
+      { nombre: 'Limón en polvo', cantidad: 8,   unidad: 'g',  costePorUnidad: 0.01000 },
+      { nombre: 'Azúcar',         cantidad: 15,  unidad: 'g',  costePorUnidad: 0.00100 },
+    ]
+  },
+  {
+    id: 'chipotle',
+    emoji: '💨',
+    nombre: 'Chipotle Deluxe',
+    tipo: 'Picante',
+    sxb: 30,
+    pvp: 0.99,
+    cad: 7,
+    notas: 'Doble ahumado: pimentón + chipotle. Reposar 45 min en frío. Si el ahumado domina sobre el picante, reducir chipotle un 20% en siguiente lote.',
+    sensorial: { Dulzor: 2, Acidez: 2, Picante: 4, Ahumado: 6, Umami: 5 },
+    ingredientes: [
+      { nombre: 'Mayonesa',          cantidad: 680, unidad: 'g',  costePorUnidad: 0.00251 },
+      { nombre: 'Agua',              cantidad: 160, unidad: 'ml', costePorUnidad: 0.00000 },
+      { nombre: 'Pimentón ahumado',  cantidad: 25,  unidad: 'g',  costePorUnidad: 0.00300 },
+      { nombre: 'Azúcar',            cantidad: 20,  unidad: 'g',  costePorUnidad: 0.00100 },
+      { nombre: 'Chipotle en polvo', cantidad: 15,  unidad: 'g',  costePorUnidad: 0.01200 },
+      { nombre: 'Ajo en polvo',      cantidad: 10,  unidad: 'g',  costePorUnidad: 0.01000 },
+      { nombre: 'Limón en polvo',    cantidad: 8,   unidad: 'g',  costePorUnidad: 0.01000 },
+      { nombre: 'Glutamato',         cantidad: 3,   unidad: 'g',  costePorUnidad: 0.00600 },
+    ]
+  },
+  {
+    id: 'trufada',
+    emoji: '🍄',
+    nombre: 'Trufada',
+    tipo: 'Especial',
+    sxb: 25,
+    pvp: 1.49,
+    cad: 5,
+    notas: 'Añadir aceite de trufa en hilo muy fino mientras se mezcla a baja velocidad. No sobremezclar. Reposar 1 h. Caducidad 5 días.',
+    sensorial: { Dulzor: 0, Acidez: 2, Picante: 0, Ahumado: 0, Umami: 8 },
+    ingredientes: [
+      { nombre: 'Mayonesa',       cantidad: 800, unidad: 'g',  costePorUnidad: 0.00251 },
+      { nombre: 'Agua',           cantidad: 80,  unidad: 'ml', costePorUnidad: 0.00000 },
+      { nombre: 'Aceite de trufa',cantidad: 50,  unidad: 'ml', costePorUnidad: 0.06000 },
+      { nombre: 'Ajo en polvo',   cantidad: 8,   unidad: 'g',  costePorUnidad: 0.01000 },
+      { nombre: 'Limón en polvo', cantidad: 6,   unidad: 'g',  costePorUnidad: 0.01000 },
+      { nombre: 'Pimienta negra', cantidad: 4,   unidad: 'g',  costePorUnidad: 0.01600 },
+      { nombre: 'Glutamato',      cantidad: 3,   unidad: 'g',  costePorUnidad: 0.00600 },
+      { nombre: 'Sal',            cantidad: 5,   unidad: 'g',  costePorUnidad: 0.00050 },
+    ]
+  },
+];
+
+// ─── COLORES PERFIL SENSORIAL ─────────────────────────────────────────────────
+const COLORES = {
+  Dulzor:   '#f59e0b',
+  Acidez:   '#10b981',
+  Picante:  '#ef4444',
+  Ahumado:  '#78716c',
+  Umami:    '#8b5cf6',
+  Herbáceo: '#22c55e',
+};
+
+const BADGE_CLASS = {
+  'Clásica': 'badge-clasica',
+  'Picante':  'badge-picante',
+  'Especial': 'badge-especial',
+};
+
+// ─── ESTADO ───────────────────────────────────────────────────────────────────
+let selId = 'paletos';
+let bib = 1;
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+function getSalsa() { return SALSAS.find(s => s.id === selId); }
+
+function fmtCantidad(q, u) {
+  const v = q * bib;
+  if (v >= 1000) {
+    const val = (v / 1000).toFixed(2).replace(/\.?0+$/, '');
+    return val + (u === 'ml' ? ' L' : ' kg');
+  }
+  return Math.round(v) + ' ' + u;
+}
+
+function fmtEuro(n) {
+  return n.toLocaleString('es-ES', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2 });
+}
+
+function costePorL(salsa) {
+  return salsa.ingredientes.reduce((s, i) => s + i.cantidad * i.costePorUnidad, 0);
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function renderSelector() {
+  document.getElementById('sauce-selector').innerHTML = SALSAS.map(s => `
+    <button
+      class="sauce-btn${s.id === selId ? ' active' : ''}"
+      onclick="seleccionar('${s.id}')"
+      title="${s.nombre}"
+      aria-pressed="${s.id === selId}"
+    >
+      <span class="sauce-btn-icon">${s.emoji}</span>
+      <span class="sauce-btn-name">${s.nombre}</span>
+    </button>
+  `).join('');
+}
+
+function renderContenido() {
+  const s = getSalsa();
+
+  // Header
+  document.getElementById('h-name').textContent = s.nombre;
+  const badge = document.getElementById('h-badge');
+  badge.textContent = s.tipo;
+  badge.className = 'badge ' + BADGE_CLASS[s.tipo];
+
+  // Biberones
+  document.getElementById('bib-val').textContent = bib;
+
+  // Stats
+  const cpl = costePorL(s);
+  const totalCoste = cpl * bib;
+  const totalBurgers = Math.floor((1000 * bib) / s.sxb);
+  const costePorBurger = totalCoste / totalBurgers;
+
+  document.getElementById('s-cost').textContent = fmtEuro(totalCoste);
+  document.getElementById('s-cpl').textContent = fmtEuro(cpl);
+  document.getElementById('s-cpb').textContent = fmtEuro(costePorBurger);
+  document.getElementById('s-bgt').textContent = '~' + totalBurgers;
+
+  // Ingredientes
+  const ingHtml = s.ingredientes.map(i => {
+    const costeItem = i.cantidad * bib * i.costePorUnidad;
+    return `
+      <div class="ing-row">
+        <span class="ing-name">${i.nombre}</span>
+        <span class="ing-qty">${fmtCantidad(i.cantidad, i.unidad)}</span>
+        <span class="ing-cost">${fmtEuro(costeItem)}</span>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('ing-list').innerHTML = ingHtml;
+
+  const pesoTotal = s.ingredientes.reduce((sum, i) => sum + i.cantidad * bib, 0);
+  document.getElementById('total-wt').textContent = pesoTotal >= 1000
+    ? (pesoTotal / 1000).toFixed(2) + ' kg'
+    : Math.round(pesoTotal) + ' g';
+
+  // Perfil sensorial
+  const sensHtml = Object.entries(s.sensorial).map(([k, v]) => `
+    <div class="bar-row">
+      <span class="bar-label">${k}</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${(v / 8) * 100}%;background:${COLORES[k] || '#94a3b8'}"></div>
+      </div>
+      <span class="bar-score">${v}/8</span>
+    </div>
+  `).join('');
+  document.getElementById('sensorial-bars').innerHTML = sensHtml;
+
+  // Info boxes
+  document.getElementById('i-sxb').textContent = s.sxb + ' g';
+  document.getElementById('i-cad').textContent = s.cad + ' días';
+  document.getElementById('i-pvp').textContent = fmtEuro(s.pvp);
+  document.getElementById('i-tipo').textContent = s.tipo;
+
+  // Notas
+  document.getElementById('notes-text').textContent = s.notas;
+}
+
+function render() {
+  renderSelector();
+  renderContenido();
+}
+
+// ─── ACCIONES ─────────────────────────────────────────────────────────────────
+function seleccionar(id) {
+  selId = id;
+  bib = 1;
+  render();
+}
+
+function adj(delta) {
+  bib = Math.max(1, Math.min(50, bib + delta));
+  document.getElementById('bib-val').textContent = bib;
+  renderContenido();
+}
+
+// ─── INICIO ───────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
