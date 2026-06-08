@@ -6,925 +6,249 @@
   <title>Calculadora de Salsas — Chamberí Brothers</title>
   <style>
     :root {
-      --bg: #ffffff;
-      --bg-2: #f7f7f5;
-      --bg-3: #f0efea;
-      --border: #e5e4de;
-      --border-2: #d0cfc8;
-      --text: #1a1a18;
-      --text-2: #6b6b63;
-      --text-3: #9e9d94;
-      --accent: #e85d2f;
-      --accent-bg: #fef2ed;
-      --amber: #d97706;
-      --amber-bg: #fffbeb;
-      --teal: #0d9488;
-      --teal-bg: #f0fdfa;
-      --green: #16a34a;
-      --green-bg: #f0fdf4;
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 14px;
+      --bg-0:#0e0f13; --bg-1:#15171d; --bg-2:#1c1f27; --bg-3:#262a34;
+      --border:#2c313c; --border-2:#3a4150;
+      --text:#e7e9ee; --text-2:#9aa1b1; --text-3:#6b7280;
+      --accent:#e9b44c; --accent-2:#c98f2c; --green:#56c08d; --yellow:#e3c05a; --red:#e07a6e;
+      --radius:14px; --radius-sm:9px;
     }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 14px;
-      line-height: 1.5;
-      min-height: 100vh;
-    }
-
-    .app {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 24px 20px 40px;
-    }
-
-    /* Header */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .header-title {
-      font-size: 17px;
-      font-weight: 600;
-      color: var(--text);
-      letter-spacing: -0.02em;
-    }
-
-    .header-sub {
-      font-size: 12px;
-      color: var(--text-3);
-      margin-top: 1px;
-    }
-
-    .last-updated {
-      font-size: 11px;
-      color: var(--text-3);
-      text-align: right;
-    }
-
-    /* Sauce selector */
-    .sauce-selector {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
-      margin-bottom: 20px;
-    }
-
-    .sauce-btn {
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 10px 6px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.15s ease;
-      user-select: none;
-    }
-
-    .sauce-btn:hover {
-      background: var(--bg-3);
-      border-color: var(--border-2);
-    }
-
-    .sauce-btn.active {
-      background: var(--accent-bg);
-      border-color: var(--accent);
-      border-width: 1.5px;
-    }
-
-    .sauce-btn-icon {
-      font-size: 20px;
-      margin-bottom: 4px;
-      display: block;
-    }
-
-    .sauce-btn-name {
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--text-2);
-      line-height: 1.3;
-    }
-
-    .sauce-btn.active .sauce-btn-name {
-      color: var(--accent);
-    }
-
-    /* Main card */
-    .main-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-    }
-
-    /* Card header */
-    .card-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--bg-2);
-    }
-
-    .card-header-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .sauce-name-big {
-      font-size: 17px;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      color: var(--text);
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      font-size: 11px;
-      font-weight: 500;
-      padding: 3px 9px;
-      border-radius: 100px;
-      letter-spacing: 0.01em;
-    }
-
-    .badge-clasica  { background: var(--amber-bg); color: var(--amber); border: 1px solid #fcd34d; }
-    .badge-picante  { background: var(--accent-bg); color: var(--accent); border: 1px solid #fca5a5; }
-    .badge-especial { background: var(--teal-bg);   color: var(--teal);   border: 1px solid #5eead4; }
-
-    /* Biberones control */
-    .bib-control {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .bib-label {
-      font-size: 12px;
-      color: var(--text-3);
-    }
-
-    .bib-btn {
-      width: 28px;
-      height: 28px;
-      border: 1px solid var(--border-2);
-      border-radius: var(--radius-sm);
-      background: var(--bg);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      color: var(--text-2);
-      transition: background 0.1s;
-      line-height: 1;
-    }
-
-    .bib-btn:hover  { background: var(--bg-3); }
-    .bib-btn:active { background: var(--border); }
-
-    .bib-val {
-      font-size: 20px;
-      font-weight: 600;
-      min-width: 28px;
-      text-align: center;
-      color: var(--text);
-    }
-
-    /* Stats row */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .stat-box {
-      padding: 14px 18px;
-      border-right: 1px solid var(--border);
-    }
-
-    .stat-box:last-child { border-right: none; }
-
-    .stat-label {
-      font-size: 11px;
-      color: var(--text-3);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 4px;
-    }
-
-    .stat-value {
-      font-size: 20px;
-      font-weight: 600;
-      color: var(--text);
-      letter-spacing: -0.02em;
-    }
-
-    .stat-value.highlight { color: var(--teal); }
-
-    /* Body grid */
-    .card-body {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .col-left {
-      padding: 18px 20px;
-      border-right: 1px solid var(--border);
-    }
-
-    .col-right {
-      padding: 18px 20px;
-    }
-
-    .col-title {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-3);
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    /* Ingredient list */
-    .ing-list { width: 100%; }
-
-    .ing-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 6px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .ing-row:last-child { border-bottom: none; }
-
-    .ing-name  { font-size: 13px; color: var(--text); }
-    .ing-qty   { font-size: 13px; font-weight: 500; color: var(--text-2); text-align: right; }
-    .ing-cost  { font-size: 11px; color: var(--text-3); text-align: right; min-width: 48px; }
-
-    .total-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 10px;
-      margin-top: 4px;
-      border-top: 1px solid var(--border-2);
-    }
-
-    .total-label { font-size: 12px; color: var(--text-2); font-weight: 500; }
-    .total-val   { font-size: 13px; font-weight: 600; color: var(--text); }
-
-    /* Sensorial bars */
-    .bar-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-
-    .bar-row:last-child { margin-bottom: 0; }
-
-    .bar-label {
-      font-size: 12px;
-      color: var(--text-2);
-      width: 70px;
-      flex-shrink: 0;
-    }
-
-    .bar-track {
-      flex: 1;
-      height: 8px;
-      background: var(--bg-3);
-      border-radius: 100px;
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      height: 100%;
-      border-radius: 100px;
-      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .bar-score {
-      font-size: 11px;
-      color: var(--text-3);
-      min-width: 28px;
-      text-align: right;
-    }
-
-    /* Info boxes */
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 16px;
-    }
-
-    .info-box {
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 10px 12px;
-    }
-
-    .info-box-label {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-3);
-      margin-bottom: 3px;
-    }
-
-    .info-box-val {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    /* Notes */
-    .notes-section {
-      margin-top: 16px;
-      padding-top: 14px;
-      border-top: 1px solid var(--border);
-    }
-
-    .notes-text {
-      font-size: 12px;
-      color: var(--text-2);
-      line-height: 1.7;
-    }
-
-    /* ── LOTE STRIP ──────────────────────────────────────────────── */
-    .lote-strip {
-      padding: 12px 20px;
-      border-top: 1px solid var(--border);
-      background: var(--bg-2);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .lote-strip-label {
-      font-size: 11px;
-      color: var(--text-3);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .lote-inp {
-      height: 30px;
-      border: 1px solid var(--border-2);
-      border-radius: var(--radius-sm);
-      background: var(--bg);
-      color: var(--text);
-      font-size: 12px;
-      padding: 0 9px;
-      outline: none;
-      transition: border-color 0.1s;
-    }
-
-    .lote-inp:focus { border-color: var(--accent); }
-
-    #lote-fecha  { width: 136px; }
-    #lote-autor  { width: 130px; }
-
-    .btn-lote {
-      height: 30px;
-      padding: 0 14px;
-      background: var(--bg);
-      border: 1px solid var(--border-2);
-      border-radius: var(--radius-sm);
-      color: var(--text-2);
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background 0.1s, border-color 0.1s;
-    }
-
-    .btn-lote:hover { background: var(--bg-3); border-color: var(--border-2); }
-
-    .lote-result-wrap {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      opacity: 0;
-      transform: translateX(-4px);
-      transition: opacity 0.2s ease, transform 0.2s ease;
-    }
-
-    .lote-result-wrap.visible {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    .lote-result-num {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--green);
-      letter-spacing: 0.04em;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .btn-copy-lote {
-      width: 26px;
-      height: 26px;
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-3);
-      transition: background 0.1s;
-    }
-
-    .btn-copy-lote:hover { background: var(--bg-3); }
-
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--text);
-      color: #fff;
-      padding: 9px 16px;
-      border-radius: 100px;
-      font-size: 12px;
-      font-weight: 500;
-      opacity: 0;
-      transition: all 0.25s ease;
-      z-index: 999;
-      white-space: nowrap;
-      pointer-events: none;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    /* Footer */
-    .footer {
-      margin-top: 16px;
-      text-align: center;
-      font-size: 11px;
-      color: var(--text-3);
-    }
-
-    /* Responsive */
-    @media (max-width: 640px) {
-      .sauce-selector        { grid-template-columns: repeat(4, 1fr); }
-      .stats-row             { grid-template-columns: repeat(2, 1fr); }
-      .stat-box:nth-child(2) { border-right: none; }
-      .stat-box:nth-child(3) { border-top: 1px solid var(--border); }
-      .stat-box:nth-child(4) { border-top: 1px solid var(--border); }
-      .card-body             { grid-template-columns: 1fr; }
-      .col-left              { border-right: none; border-bottom: 1px solid var(--border); }
-      .lote-strip            { gap: 8px; }
-      #lote-fecha            { width: 120px; }
-      #lote-autor            { width: 110px; }
-    }
-
-    @media (max-width: 420px) {
-      .sauce-selector  { grid-template-columns: repeat(4, 1fr); }
-      .sauce-btn-icon  { font-size: 16px; }
-    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:var(--bg-0); color:var(--text); line-height:1.45; padding:24px 16px 64px; max-width:760px; margin:0 auto; -webkit-font-smoothing:antialiased; }
+    h1 { font-size:21px; font-weight:700; letter-spacing:-.02em; }
+    .sub { color:var(--text-2); font-size:13px; margin-top:3px; }
+    .src-pill { display:inline-block; margin-top:8px; font-size:11px; color:var(--text-3); background:var(--bg-1); border:1px solid var(--border); padding:3px 9px; border-radius:999px; }
+    .selector { display:flex; flex-wrap:wrap; gap:8px; margin:20px 0 18px; }
+    .chip { display:flex; align-items:center; gap:7px; padding:9px 14px; cursor:pointer; background:var(--bg-1); border:1px solid var(--border); border-radius:999px; font-size:14px; font-weight:600; color:var(--text-2); transition:.12s; }
+    .chip:hover { border-color:var(--border-2); color:var(--text); }
+    .chip.active { background:var(--accent); border-color:var(--accent); color:#1a1407; }
+    .chip .em { font-size:16px; }
+    .card { background:var(--bg-1); border:1px solid var(--border); border-radius:var(--radius); padding:18px; margin-bottom:16px; }
+    .card-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:4px; }
+    .card-title { display:flex; align-items:center; gap:10px; font-size:18px; font-weight:700; }
+    .card-title .em { font-size:24px; }
+    .cat { font-size:11px; color:var(--text-2); background:var(--bg-3); padding:3px 9px; border-radius:999px; }
+    .notas { color:var(--text-2); font-size:13px; margin-top:8px; }
+    .alg { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+    .alg span { font-size:11px; background:var(--bg-2); border:1px solid var(--border); padding:2px 8px; border-radius:999px; color:var(--text-2); }
+    .control { display:flex; align-items:center; gap:14px; margin:6px 0 2px; flex-wrap:wrap; }
+    .control-label { font-size:13px; color:var(--text-2); }
+    .stepper { display:flex; align-items:center; background:var(--bg-2); border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; }
+    .stepper button { width:42px; height:42px; border:none; background:transparent; color:var(--text); font-size:22px; cursor:pointer; transition:.1s; }
+    .stepper button:hover { background:var(--bg-3); }
+    .stepper input { width:64px; height:42px; border:none; background:transparent; color:var(--text); text-align:center; font-size:18px; font-weight:700; -moz-appearance:textfield; }
+    .stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{ -webkit-appearance:none; }
+    .quick { display:flex; gap:6px; }
+    .quick button { padding:6px 11px; font-size:12px; background:var(--bg-2); border:1px solid var(--border); border-radius:999px; color:var(--text-2); cursor:pointer; }
+    .quick button:hover { border-color:var(--border-2); color:var(--text); }
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:16px; }
+    .stat { background:var(--bg-2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px; text-align:center; }
+    .stat-val { font-size:19px; font-weight:700; letter-spacing:-.02em; }
+    .stat-label { font-size:11px; color:var(--text-2); margin-top:3px; }
+    .stat.semaforo .stat-val { font-size:15px; }
+    .col-title { font-size:13px; font-weight:700; color:var(--text-2); text-transform:uppercase; letter-spacing:.04em; margin:4px 0 10px; }
+    .ing { display:grid; grid-template-columns:1fr 92px 76px; align-items:baseline; gap:12px; padding:7px 0; border-bottom:1px solid var(--border); }
+    .ing:last-child { border-bottom:none; }
+    .ing-name { font-size:14px; min-width:0; }
+    .ing-name .ex { color:var(--yellow); font-size:11px; margin-left:5px; }
+    .ing-qty { font-size:14px; font-weight:600; white-space:nowrap; text-align:right; font-variant-numeric:tabular-nums; }
+    .ing-cost { font-size:12px; color:var(--text-3); text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
+    .ing-foot { display:grid; grid-template-columns:1fr 76px; gap:12px; padding-top:11px; margin-top:4px; font-weight:700; font-size:14px; }
+    .ing-foot span:last-child { text-align:right; font-variant-numeric:tabular-nums; }
+    .sens { display:flex; flex-direction:column; gap:9px; }
+    .sens-row { display:flex; align-items:center; gap:10px; }
+    .sens-label { font-size:13px; color:var(--text-2); width:110px; }
+    .sens-bar { flex:1; height:8px; background:var(--bg-3); border-radius:999px; overflow:hidden; }
+    .sens-fill { height:100%; background:linear-gradient(90deg,var(--accent-2),var(--accent)); border-radius:999px; }
+    ol.metodo { padding-left:20px; display:flex; flex-direction:column; gap:7px; }
+    ol.metodo li { font-size:13.5px; padding-left:4px; } ol.metodo li::marker { color:var(--accent); font-weight:700; }
+    .lote-strip { display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+    .lote-label { font-size:13px; font-weight:700; color:var(--text-2); }
+    .lote-inp { height:38px; background:var(--bg-2); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); padding:0 11px; font-size:13px; }
+    #lote-fecha { width:150px; } #lote-autor { width:150px; }
+    .lote-inp:focus { outline:none; border-color:var(--accent); }
+    .btn { height:38px; padding:0 16px; border:1px solid var(--border-2); background:var(--bg-3); color:var(--text); border-radius:var(--radius-sm); font-size:13px; font-weight:600; cursor:pointer; transition:.12s; }
+    .btn:hover { background:var(--border-2); }
+    .btn-accent { background:var(--accent); border-color:var(--accent); color:#1a1407; }
+    .btn-accent:hover { background:var(--accent-2); }
+    .lote-result { display:none; align-items:center; gap:9px; margin-top:12px; padding:11px 14px; background:var(--bg-2); border:1px dashed var(--accent-2); border-radius:var(--radius-sm); }
+    .lote-result.visible { display:flex; }
+    .lote-num { font-size:16px; font-weight:700; letter-spacing:.02em; font-family:ui-monospace,Menlo,monospace; color:var(--accent); }
+    .resumen-box { margin-top:12px; }
+    pre.resumen { background:var(--bg-0); border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px; font-size:12px; color:var(--text-2); white-space:pre-wrap; font-family:ui-monospace,Menlo,monospace; max-height:230px; overflow:auto; }
+    .warn { font-size:12px; color:var(--yellow); background:rgba(227,192,90,.08); border:1px solid rgba(227,192,90,.25); border-radius:var(--radius-sm); padding:9px 12px; margin-top:12px; }
+    #toast { position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(20px); opacity:0; pointer-events:none; background:var(--accent); color:#1a1407; font-weight:600; font-size:13px; padding:10px 18px; border-radius:999px; transition:.25s; z-index:50; }
+    #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    @media (max-width:560px){ .stats{ grid-template-columns:repeat(2,1fr); } #lote-fecha,#lote-autor{ width:100%; } }
   </style>
 </head>
 <body>
-<div class="app">
+  <header>
+    <h1>🧮 Calculadora de Salsas</h1>
+    <div class="sub">Chamberí Brothers — producción de salsas en biberón · unidad base = 1 biberón (1 L)</div>
+    <span class="src-pill" id="src-pill">Datos: Notion</span>
+  </header>
 
-  <div class="header">
-    <div>
-      <div class="header-title">🧪 Calculadora de Salsas</div>
-      <div class="header-sub">Chamberí Brothers — Laboratorio de Salsas</div>
-    </div>
-    <div class="last-updated">
-      Datos actualizados<br>mayo 2026
-    </div>
+  <div class="selector" id="selector"></div>
+  <div class="card" id="card-receta"></div>
+
+  <div class="card">
+    <div class="col-title">🧾 Ingredientes para la producción</div>
+    <div id="ingredientes"></div>
+  </div>
+  <div class="card">
+    <div class="col-title">🌶 Perfil sensorial</div>
+    <div class="sens" id="sensorial"></div>
+  </div>
+  <div class="card" id="card-metodo" style="display:none">
+    <div class="col-title">📋 Método</div>
+    <ol class="metodo" id="metodo"></ol>
   </div>
 
-  <div class="sauce-selector" id="sauce-selector"></div>
-
-  <div class="main-card">
-
-    <div class="card-header">
-      <div class="card-header-left">
-        <span class="sauce-name-big" id="h-name">—</span>
-        <span class="badge" id="h-badge"></span>
-      </div>
-      <div class="bib-control">
-        <span class="bib-label">Biberones</span>
-        <button class="bib-btn" onclick="adj(-1)" aria-label="Menos">−</button>
-        <span class="bib-val" id="bib-val">1</span>
-        <button class="bib-btn" onclick="adj(1)" aria-label="Más">+</button>
-      </div>
-    </div>
-
-    <div class="stats-row">
-      <div class="stat-box">
-        <div class="stat-label">Coste lote</div>
-        <div class="stat-value" id="s-cost">—</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Coste / litro</div>
-        <div class="stat-value" id="s-cpl">—</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Coste / burger</div>
-        <div class="stat-value highlight" id="s-cpb">—</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Burgers totales</div>
-        <div class="stat-value" id="s-bgt">—</div>
-      </div>
-    </div>
-
-    <div class="card-body">
-
-      <div class="col-left">
-        <div class="col-title">Ingredientes para el lote</div>
-        <div class="ing-list" id="ing-list"></div>
-        <div class="total-row">
-          <span class="total-label">Peso total</span>
-          <span class="total-val" id="total-wt">—</span>
-        </div>
-      </div>
-
-      <div class="col-right">
-        <div class="col-title">Perfil sensorial</div>
-        <div id="sensorial-bars"></div>
-
-        <div class="info-grid">
-          <div class="info-box">
-            <div class="info-box-label">Salsa por burger</div>
-            <div class="info-box-val" id="i-sxb">—</div>
-          </div>
-          <div class="info-box">
-            <div class="info-box-label">Caducidad</div>
-            <div class="info-box-val" id="i-cad">—</div>
-          </div>
-          <div class="info-box">
-            <div class="info-box-label">PVP salsero</div>
-            <div class="info-box-val" id="i-pvp">—</div>
-          </div>
-          <div class="info-box">
-            <div class="info-box-label">Tipo</div>
-            <div class="info-box-val" id="i-tipo">—</div>
-          </div>
-        </div>
-
-        <div class="notes-section">
-          <div class="col-title" style="margin-bottom:6px">Notas de producción</div>
-          <div class="notes-text" id="notes-text">—</div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ── Lote strip ── -->
+  <div class="card">
+    <div class="col-title">🏷️ Lote de producción</div>
     <div class="lote-strip">
-      <span class="lote-strip-label">Nº Lote</span>
+      <span class="lote-label">Nº Lote</span>
       <input type="date" id="lote-fecha" class="lote-inp" />
-      <input type="text" id="lote-autor" class="lote-inp" placeholder="Encargado" list="autores-list" autocomplete="off" />
-      <datalist id="autores-list">
-        <option value="Paco">
-        <option value="Manuel">
-        <option value="Equipo">
-      </datalist>
-      <button class="btn-lote" onclick="generarLote()">Generar lote</button>
-      <div class="lote-result-wrap" id="lote-result-wrap">
-        <span class="lote-result-num" id="lote-result-num"></span>
-        <button class="btn-copy-lote" onclick="copiarLote()" title="Copiar">📋</button>
-      </div>
+      <input type="text" id="lote-autor" class="lote-inp" placeholder="Encargado" list="autores" autocomplete="off" />
+      <datalist id="autores"></datalist>
+      <button class="btn btn-accent" onclick="generarLote()">🚀 Generar lote</button>
     </div>
-
+    <div class="lote-result" id="lote-result">
+      <span class="lote-num" id="lote-num"></span>
+      <button class="btn" onclick="copiarLote()">📋 Copiar</button>
+    </div>
+    <div class="resumen-box">
+      <pre class="resumen" id="resumen"></pre>
+      <button class="btn" style="margin-top:10px" onclick="copiarResumen()">📋 Copiar resumen para PRODUCCIONES</button>
+    </div>
   </div>
 
-  <div class="footer">
-    Calculadora interna · Chamberí Brothers © 2026
-  </div>
+  <div id="toast"></div>
 
-</div>
+  <script src="data.js"></script>
+  <script>
+  const DATA = window.SALSAS_DATA || { _meta:{}, salsas:[] };
+  const META = DATA._meta || {};
+  const PREFIX = META.lotePrefix || "CB";
+  let currentId = (DATA.salsas[0]||{}).id;
+  let bibs = 1;
 
-<div class="toast" id="toast"></div>
+  const fmt = (n,d=2)=> (Number(n)||0).toFixed(d).replace(".",",");
+  const eur = (n,d=2)=> fmt(n,d)+" €";
+  const wt  = n => n>=1000 ? fmt(n/1000,2)+" kg" : (Math.round(n*10)/10)+" g";
+  const vol = n => n>=1000 ? fmt(n/1000,2)+" L"  : (Math.round(n*10)/10)+" ml";
+  const med = (n,u)=> u==="ml" ? vol(n) : wt(n);
+  const cur = () => DATA.salsas.find(s=>s.id===currentId) || DATA.salsas[0];
+  function isoDate(d){ return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}`; }
+  function toast(m){ const t=document.getElementById("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),2200); }
 
-<script>
-// ─── DATOS DE SALSAS ──────────────────────────────────────────────────────────
-const SALSAS = [
-  {
-    id: 'paletos', emoji: '🤠', nombre: 'Paletos Deluxe', tipo: 'Clásica',
-    sxb: 35, pvp: 0.99, cad: 7,
-    notas: 'Homogeneizar 3–4 min a velocidad media. Reposar 30 min en frío antes de envasar. Temp. servicio 4–8 ºC.',
-    sensorial: { Dulzor: 2, Acidez: 4, Picante: 1, Ahumado: 0, Umami: 3 },
-    ingredientes: [
-      { nombre: 'Mayonesa',         cantidad: 654.5, unidad: 'g',  costePorUnidad: 0.00251 },
-      { nombre: 'Ketchup',          cantidad: 100,   unidad: 'g',  costePorUnidad: 0.00160 },
-      { nombre: 'Mostaza',          cantidad: 50,    unidad: 'g',  costePorUnidad: 0.00300 },
-      { nombre: 'Vinagre',          cantidad: 30,    unidad: 'ml', costePorUnidad: 0.00200 },
-      { nombre: 'Azúcar',           cantidad: 20,    unidad: 'g',  costePorUnidad: 0.00100 },
-      { nombre: 'Limón en polvo',   cantidad: 10,    unidad: 'g',  costePorUnidad: 0.01000 },
-      { nombre: 'Ajo en polvo',     cantidad: 8,     unidad: 'g',  costePorUnidad: 0.01000 },
-      { nombre: 'Cebolla en polvo', cantidad: 8,     unidad: 'g',  costePorUnidad: 0.00800 },
-      { nombre: 'Mostaza en polvo', cantidad: 8,     unidad: 'g',  costePorUnidad: 0.01200 },
-      { nombre: 'Perejil seco',     cantidad: 5,     unidad: 'g',  costePorUnidad: 0.04000 },
-      { nombre: 'Pimienta negra',   cantidad: 3,     unidad: 'g',  costePorUnidad: 0.01600 },
-      { nombre: 'Glutamato',        cantidad: 3,     unidad: 'g',  costePorUnidad: 0.00600 },
-      { nombre: 'Agua',             cantidad: 50,    unidad: 'ml', costePorUnidad: 0.00000 },
-    ]
-  },
-  {
-    id: 'ranch', emoji: '🌿', nombre: 'Ranch Clásico', tipo: 'Clásica',
-    sxb: 30, pvp: 0.99, cad: 7,
-    notas: 'Ajustar cantidad de agua según densidad deseada. La salsa espesa en frío. Reposar 30 min antes de envasar.',
-    sensorial: { Dulzor: 1, Acidez: 3, Picante: 1, Ahumado: 0, Umami: 2 },
-    ingredientes: [
-      { nombre: 'Suero de leche',   cantidad: 300,   unidad: 'ml', costePorUnidad: 0.00000 },
-      { nombre: 'Mayonesa',         cantidad: 450,   unidad: 'g',  costePorUnidad: 0.00251 },
-      { nombre: 'Crema agria',      cantidad: 150,   unidad: 'g',  costePorUnidad: 0.00300 },
-      { nombre: 'Vinagre',          cantidad: 25,    unidad: 'ml', costePorUnidad: 0.00200 },
-      { nombre: 'Mostaza en polvo', cantidad: 10,    unidad: 'g',  costePorUnidad: 0.01200 },
-      { nombre: 'Ajo en polvo',     cantidad: 8,     unidad: 'g',  costePorUnidad: 0.01000 },
-      { nombre: 'Cebolla en polvo', cantidad: 8,     unidad: 'g',  costePorUnidad: 0.00800 },
-      { nombre: 'Limón en polvo',   cantidad: 6,     unidad: 'g',  costePorUnidad: 0.01000 },
-      { nombre: 'Perejil seco',     cantidad: 6,     unidad: 'g',  costePorUnidad: 0.04000 },
-      { nombre: 'Pimienta negra',   cantidad: 3,     unidad: 'g',  costePorUnidad: 0.01600 },
-    ]
-  },
-  {
-    id: 'bbq', emoji: '🔥', nombre: 'BBQ Ahumada', tipo: 'Clásica',
-    sxb: 35, pvp: 0.99, cad: 10,
-    notas: 'El ahumado se intensifica con el reposo — validar perfil al día siguiente. Opcional: calentar a 60 ºC 5 min para potenciar el ahumado.',
-    sensorial: { Dulzor: 5, Acidez: 3, Picante: 1, Ahumado: 7, Umami: 5 },
-    ingredientes: [
-      { nombre: 'Ketchup',            cantidad: 600,  unidad: 'g',  costePorUnidad: 0.00160 },
-      { nombre: 'Agua',               cantidad: 150,  unidad: 'ml', costePorUnidad: 0.00000 },
-      { nombre: 'Vinagre',            cantidad: 80,   unidad: 'ml', costePorUnidad: 0.00200 },
-      { nombre: 'Azúcar moreno',      cantidad: 60,   unidad: 'g',  costePorUnidad: 0.00150 },
-      { nombre: 'Pimentón ahumado',   cantidad: 20,   unidad: 'g',  costePorUnidad: 0.00300 },
-      { nombre: 'Humo líquido',       cantidad: 10,   unidad: 'ml', costePorUnidad: 0.04000 },
-      { nombre: 'Mostaza',            cantidad: 30,   unidad: 'g',  costePorUnidad: 0.00300 },
-      { nombre: 'Ajo en polvo',       cantidad: 10,   unidad: 'g',  costePorUnidad: 0.01000 },
-      { nombre: 'Cebolla en polvo',   cantidad: 8,    unidad: 'g',  costePorUnidad: 0.00800 },
-      { nombre: 'Pimienta negra',     cantidad: 5,    unidad: 'g',  costePorUnidad: 0.01600 },
-      { nombre: 'Glutamato',          cantidad: 3,    unidad: 'g',  costePorUnidad: 0.00600 },
-    ]
-  },
-  {
-    id: 'buffalo', emoji: '🐃', nombre: 'Buffalo Mayo', tipo: 'Picante',
-    sxb: 30, pvp: 0.99, cad: 7,
-    notas: 'El picante de la cayena evoluciona en reposo. Validar intensidad tras 24 h antes de aprobar lote. Ajustar cayena según producción.',
-    sensorial: { Dulzor: 1, Acidez: 5, Picante: 6, Ahumado: 0, Umami: 2 },
-    ingredientes: [
-      { nombre: 'Mayonesa',         cantidad: 650,  unidad: 'g',  costePorUnidad: 0.00251 },
-      { nombre: 'Vinagre',          cantidad: 100,  unidad: 'ml', costePorUnidad: 0.00200 },
-      { nombre: 'Mostaza',          cantidad: 40,   unidad: 'g',  costePorUnidad: 0.00300 },
-      { nombre: 'Agua',             cantidad: 80,   unidad: 'ml', costePorUnidad: 0.00000 },
-      { nombre: 'Cayena en polvo',  cantidad: 12,   unidad: 'g',  costePorUnidad: 0.00800 },
-      { nombre: 'Ajo en polvo',     cantidad: 10,   unidad: 'g',  costePorUnidad: 0.01000 },
-      { nombre: 'Azúcar',           cantidad: 15,   unidad: 'g',  costePorUnidad: 0.00100 },
-      { nombre: 'Pimienta negra',   cantidad: 5,    unidad: 'g',  costePorUnidad: 0.01600 },
-    ]
-  },
-  {
-    id: 'sriracha', emoji: '🌶', nombre: 'Sriracha Mayo', tipo: 'Picante',
-    sxb: 30, pvp: 0.99, cad: 7,
-    notas: 'Calibrar ratio mayo/sriracha en primera producción — el picante varía entre lotes de sriracha. Reposar 30 min antes de envasar.',
-    sensorial: { Dulzor: 2, Acidez: 3, Picante: 5, Ahumado: 0, Umami: 3 },
-    ingredientes: [
-      { nombre: 'Mayonesa',         cantidad: 600,  unidad: 'g',  costePorUnidad: 0.00251 },
-      { nombre: 'Sriracha',         cantidad: 200,  unidad: 'ml', costePorUnidad: 0.00500 },
-      { nombre: 'Lima en polvo',    cantidad: 10,   unidad: 'g',  costePorUnidad: 0.01200 },
-      { nombre: 'Ajo en polvo',     cantidad: 8,    unidad: 'g',  costePorUnidad: 0.01000 },
-      { nombre: 'Azúcar',           cantidad: 15,   unidad: 'g',  costePorUnidad: 0.00100 },
-      { nombre: 'Agua',             cantidad: 80,   unidad: 'ml', costePorUnidad: 0.00000 },
-    ]
-  },
-  {
-    id: 'chipotle', emoji: '🫑', nombre: 'Chipotle Deluxe', tipo: 'Especial',
-    sxb: 30, pvp: 0.99, cad: 7,
-    notas: 'Si el ahumado domina sobre el picante, reducir chipotle un 20% en siguiente lote.',
-    sensorial: { Dulzor: 2, Acidez: 2, Picante: 4, Ahumado: 6, Umami: 5 },
-    ingredientes: [
-      { nombre: 'Mayonesa',           cantidad: 680,  unidad: 'g',  costePorUnidad: 0.00251 },
-      { nombre: 'Agua',               cantidad: 160,  unidad: 'ml', costePorUnidad: 0.00000 },
-      { nombre: 'Pimentón ahumado',   cantidad: 25,   unidad: 'g',  costePorUnidad: 0.00300 },
-      { nombre: 'Azúcar',             cantidad: 20,   unidad: 'g',  costePorUnidad: 0.00100 },
-      { nombre: 'Chipotle en polvo',  cantidad: 15,   unidad: 'g',  costePorUnidad: 0.01200 },
-      { nombre: 'Ajo en polvo',       cantidad: 10,   unidad: 'g',  costePorUnidad: 0.01000 },
-      { nombre: 'Limón en polvo',     cantidad: 8,    unidad: 'g',  costePorUnidad: 0.01000 },
-      { nombre: 'Glutamato',          cantidad: 3,    unidad: 'g',  costePorUnidad: 0.00600 },
-    ]
-  },
-  {
-    id: 'trufada', emoji: '🍄', nombre: 'Trufada', tipo: 'Especial',
-    sxb: 25, pvp: 1.49, cad: 5,
-    notas: 'Añadir aceite de trufa en hilo muy fino mientras se mezcla a baja velocidad. No sobremezclar. Reposar 1 h. Caducidad 5 días.',
-    sensorial: { Dulzor: 1, Acidez: 1, Picante: 0, Ahumado: 0, Umami: 8 },
-    ingredientes: [
-      { nombre: 'Mayonesa',         cantidad: 724,  unidad: 'g',  costePorUnidad: 0.00251 },
-      { nombre: 'Agua',             cantidad: 0,    unidad: 'ml', costePorUnidad: 0.00000 },
-      { nombre: 'Aceite de trufa',  cantidad: 50,   unidad: 'ml', costePorUnidad: 0.06000 },
-      { nombre: 'Ajo en polvo',     cantidad: 8,    unidad: 'g',  costePorUnidad: 0.01000 },
-      { nombre: 'Limón en polvo',   cantidad: 6,    unidad: 'g',  costePorUnidad: 0.01000 },
-      { nombre: 'Pimienta negra',   cantidad: 4,    unidad: 'g',  costePorUnidad: 0.01600 },
-      { nombre: 'Glutamato',        cantidad: 3,    unidad: 'g',  costePorUnidad: 0.00600 },
-      { nombre: 'Sal',              cantidad: 5,    unidad: 'g',  costePorUnidad: 0.00050 },
-    ]
-  },
-];
-
-// ─── STATE ────────────────────────────────────────────────────────────────────
-let currentId = SALSAS[0].id;
-let bibs = 1;
-
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
-const fmt  = (n, d = 2) => n.toFixed(d).replace('.', ',');
-const eur  = n => fmt(n) + ' €';
-const wt   = n => n >= 1000 ? fmt(n / 1000, 2) + ' kg' : Math.round(n) + ' g';
-
-function isoDate(d) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const dd = String(d.getDate()).padStart(2, '0');
-  return `${y}${m}${dd}`;
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), 2200);
-}
-
-// ─── LOT COUNTER ─────────────────────────────────────────────────────────────
-function getBatchCounter() {
-  const today = isoDate(new Date());
-  if (localStorage.getItem('cb_batch_date') !== today) {
-    localStorage.setItem('cb_batch_date', today);
-    localStorage.setItem('cb_batch_count', '0');
-    return 0;
-  }
-  return parseInt(localStorage.getItem('cb_batch_count') || '0', 10);
-}
-
-function incrementBatchCounter() {
-  const today = isoDate(new Date());
-  const n = getBatchCounter() + 1;
-  localStorage.setItem('cb_batch_date', today);
-  localStorage.setItem('cb_batch_count', String(n));
-  return n;
-}
-
-// ─── LOT STRIP ───────────────────────────────────────────────────────────────
-function generarLote() {
-  const fechaVal = document.getElementById('lote-fecha').value;
-  if (!fechaVal) { showToast('Selecciona una fecha'); return; }
-  const fecha = fechaVal.replace(/-/g, '');
-  const n = incrementBatchCounter();
-  const lote = `CB-${fecha}-${String(n).padStart(3, '0')}`;
-  const wrap = document.getElementById('lote-result-wrap');
-  document.getElementById('lote-result-num').textContent = lote;
-  wrap.classList.add('visible');
-  showToast(`Lote ${lote} generado`);
-}
-
-function copiarLote() {
-  const lote = document.getElementById('lote-result-num').textContent;
-  if (!lote) return;
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(lote).then(() => showToast('Copiado'));
-  } else {
-    const ta = document.createElement('textarea');
-    ta.value = lote; document.body.appendChild(ta); ta.select();
-    document.execCommand('copy'); document.body.removeChild(ta);
-    showToast('Copiado');
-  }
-}
-
-// ─── SELECTOR ────────────────────────────────────────────────────────────────
-function renderSelector() {
-  const el = document.getElementById('sauce-selector');
-  el.innerHTML = SALSAS.map(s => `
-    <button class="sauce-btn${s.id === currentId ? ' active' : ''}"
-            onclick="selectSauce('${s.id}')">
-      <span class="sauce-btn-icon">${s.emoji}</span>
-      <span class="sauce-btn-name">${s.nombre}</span>
-    </button>`).join('');
-}
-
-function selectSauce(id) {
-  currentId = id;
-  renderSelector();
-  render();
-}
-
-// ─── BIBERONES ───────────────────────────────────────────────────────────────
-function adj(d) {
-  bibs = Math.max(1, Math.min(50, bibs + d));
-  document.getElementById('bib-val').textContent = bibs;
-  render();
-}
-
-// ─── SENSORIAL COLORS ────────────────────────────────────────────────────────
-const BAR_COLORS = {
-  Dulzor:  '#d97706',
-  Acidez:  '#0d9488',
-  Picante: '#e85d2f',
-  Ahumado: '#6b7280',
-  Umami:   '#7c3aed',
-};
-
-// ─── RENDER ──────────────────────────────────────────────────────────────────
-function render() {
-  const s = SALSAS.find(x => x.id === currentId);
-  if (!s) return;
-
-  // Badge
-  document.getElementById('h-name').textContent = `${s.emoji} ${s.nombre}`;
-  const badgeEl = document.getElementById('h-badge');
-  const cls = s.tipo === 'Clásica' ? 'badge-clasica' : s.tipo === 'Picante' ? 'badge-picante' : 'badge-especial';
-  badgeEl.className = `badge ${cls}`;
-  badgeEl.textContent = s.tipo;
-
-  // Coste total
-  let totalCoste = 0, totalPeso = 0;
-  for (const ing of s.ingredientes) {
-    totalCoste += ing.cantidad * bibs * ing.costePorUnidad;
-    totalPeso  += ing.cantidad * bibs;
+  function calc(s, n){
+    const costeIngPorBib = s.ingredientes.reduce((a,i)=>a + i.cantidad*(i.costePorUnidad||0), 0); // €/biberón (1 L)
+    const costeLote = costeIngPorBib * n;
+    const costePorL = costeIngPorBib;
+    const costePorBurger = (costeIngPorBib/1000) * (s.sxb||35);
+    const pvp = s.pvpSalsero || 0;
+    const margen = pvp ? pvp - costePorBurger : 0;
+    const fc = pvp ? (costePorBurger/pvp)*100 : 0;
+    const sem = !pvp ? "—" : fc<=28 ? "🟢 Óptimo" : fc<=33 ? "🟡 Atención" : "🔴 Alto";
+    const burgers = Math.floor((n*1000)/(s.sxb||35));
+    return { costeIngPorBib, costeLote, costePorL, costePorBurger, margen, fc, sem, pvp, burgers };
   }
 
-  const burgers = Math.floor((bibs * 1000) / s.sxb);
+  function renderSelector(){
+    document.getElementById("selector").innerHTML = DATA.salsas.map(s=>
+      `<div class="chip ${s.id===currentId?"active":""}" onclick="selectSalsa('${s.id}')"><span class="em">${s.emoji||"🧂"}</span>${s.nombre}</div>`).join("");
+  }
+  function selectSalsa(id){ currentId=id; bibs=1; render(); }
+  function setBibs(v){ bibs=Math.max(1,Math.min(999,Math.round(v)||1)); render(); }
+  function adj(d){ setBibs(bibs+d); }
 
-  document.getElementById('s-cost').textContent = eur(totalCoste);
-  document.getElementById('s-cpl').textContent  = eur(totalCoste / bibs);
-  document.getElementById('s-cpb').textContent  = burgers > 0 ? eur(totalCoste / burgers) : '—';
-  document.getElementById('s-bgt').textContent  = `~${burgers}`;
-
-  // Ingredients
-  document.getElementById('ing-list').innerHTML = s.ingredientes.map(ing => {
-    const qty = ing.cantidad * bibs;
-    const cost = qty * ing.costePorUnidad;
-    return `<div class="ing-row">
-      <span class="ing-name">${ing.nombre}</span>
-      <span class="ing-qty">${wt(qty)}</span>
-      <span class="ing-cost">${cost > 0 ? eur(cost) : ''}</span>
-    </div>`;
-  }).join('');
-  document.getElementById('total-wt').textContent = wt(totalPeso);
-
-  // Sensorial bars
-  document.getElementById('sensorial-bars').innerHTML = Object.entries(s.sensorial).map(([k, v]) => `
-    <div class="bar-row">
-      <span class="bar-label">${k}</span>
-      <div class="bar-track">
-        <div class="bar-fill" style="width:${v * 10}%;background:${BAR_COLORS[k] || '#999'}"></div>
+  function render(){
+    const s=cur(); if(!s) return; const c=calc(s,bibs);
+    renderSelector();
+    document.getElementById("src-pill").textContent = "Datos: " + (META.fuente || "Notion");
+    document.getElementById("card-receta").innerHTML = `
+      <div class="card-head">
+        <div class="card-title"><span class="em">${s.emoji||"🧂"}</span>${s.nombre}</div>
       </div>
-      <span class="bar-score">${v}/10</span>
-    </div>`).join('');
+      ${s.notas?`<div class="notas">${s.notas}</div>`:""}
+      ${(s.alergenos&&s.alergenos.length)?`<div class="alg">${s.alergenos.map(a=>`<span>${a}</span>`).join("")}</div>`:""}
+      <div class="control">
+        <span class="control-label">Biberones (1 L) a producir</span>
+        <div class="stepper"><button onclick="adj(-1)">−</button>
+          <input type="number" value="${bibs}" min="1" onchange="setBibs(this.value)" /><button onclick="adj(1)">+</button></div>
+        <div class="quick"><button onclick="setBibs(1)">1</button><button onclick="setBibs(5)">5</button><button onclick="setBibs(10)">10</button></div>
+        <span class="control-label">≈ ${c.burgers} burgers (${s.sxb||35} g/burger)</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="stat-val">${eur(c.costeLote)}</div><div class="stat-label">Coste lote (ingred.)</div></div>
+        <div class="stat"><div class="stat-val">${eur(c.costePorL)}</div><div class="stat-label">Coste / biberón (L)</div></div>
+        <div class="stat"><div class="stat-val">${eur(c.costePorBurger,3)}</div><div class="stat-label">Coste / burger</div></div>
+        <div class="stat semaforo"><div class="stat-val">${c.sem}</div><div class="stat-label">Food Cost ${s.pvpSalsero?fmt(c.fc,1)+"%":""}</div></div>
+      </div>`;
 
-  // Info boxes
-  document.getElementById('i-sxb').textContent  = `${s.sxb} g`;
-  document.getElementById('i-cad').textContent  = `${s.cad} días`;
-  document.getElementById('i-pvp').textContent  = eur(s.pvp);
-  document.getElementById('i-tipo').textContent = s.tipo;
-  document.getElementById('notes-text').textContent = s.notas;
-}
+    const rows = s.ingredientes.map(i=>{
+      const q=i.cantidad*bibs, cost=i.cantidad*(i.costePorUnidad||0)*bibs;
+      return `<div class="ing"><span class="ing-name">${i.nombre}${i.ejemplo?'<span class="ex">coste ej.</span>':""}</span>
+        <span class="ing-qty">${med(q,i.unidad)}</span><span class="ing-cost">${eur(cost)}</span></div>`;
+    }).join("");
+    const hayEj = s.ingredientes.some(i=>i.ejemplo);
+    document.getElementById("ingredientes").innerHTML = rows +
+      `<div class="ing-foot"><span>Coste ingredientes (${bibs} biberón${bibs>1?"es":""})</span><span>${eur(c.costeLote)}</span></div>` +
+      (hayEj ? `<div class="warn">⚠️ Algunos costes son de <b>ejemplo</b> (faltan en Notion: CANT. PACK). Rellénalos en INVENTARIO y vuelve a sincronizar para costes reales.</div>` : "");
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-(function init() {
-  // Set today's date in lote field
-  const today = new Date();
-  const y = today.getFullYear();
-  const m = String(today.getMonth() + 1).padStart(2, '0');
-  const d = String(today.getDate()).padStart(2, '0');
-  document.getElementById('lote-fecha').value = `${y}-${m}-${d}`;
+    const maxS=8;
+    document.getElementById("sensorial").innerHTML = Object.entries(s.sensorial||{}).map(([k,v])=>
+      `<div class="sens-row"><span class="sens-label">${k}</span><div class="sens-bar"><div class="sens-fill" style="width:${Math.min(100,(v/maxS)*100)}%"></div></div></div>`).join("")
+      || `<div class="notas">Sin perfil sensorial en Notion todavía.</div>`;
 
-  renderSelector();
-  render();
-})();
-</script>
+    const met = s.metodo||[];
+    document.getElementById("card-metodo").style.display = met.length ? "" : "none";
+    document.getElementById("metodo").innerHTML = met.map(x=>`<li>${x}</li>`).join("");
+    renderResumen();
+  }
+
+  function getCounter(){ const t=isoDate(new Date());
+    if(localStorage.getItem("cb_batch_date")!==t){ localStorage.setItem("cb_batch_date",t); localStorage.setItem("cb_batch_count","0"); return 0; }
+    return parseInt(localStorage.getItem("cb_batch_count")||"0",10); }
+  function incCounter(){ const t=isoDate(new Date()); const n=getCounter()+1; localStorage.setItem("cb_batch_date",t); localStorage.setItem("cb_batch_count",String(n)); return n; }
+  function loteActual(){ return document.getElementById("lote-num").textContent || "(sin generar)"; }
+  function generarLote(){
+    const fv=document.getElementById("lote-fecha").value, fecha=fv?fv.replaceAll("-",""):isoDate(new Date());
+    const lote=`${PREFIX}-${fecha}-${String(incCounter()).padStart(3,"0")}`;
+    document.getElementById("lote-num").textContent=lote;
+    document.getElementById("lote-result").classList.add("visible");
+    const a=document.getElementById("lote-autor").value.trim();
+    if(a){ const p=JSON.parse(localStorage.getItem("cb_autores")||"[]"); if(!p.includes(a)){ p.push(a); localStorage.setItem("cb_autores",JSON.stringify(p)); renderAutores(); } }
+    toast(`Lote ${lote} generado`); renderResumen();
+  }
+  function copiarLote(){ const l=document.getElementById("lote-num").textContent; if(l) copy(l,"Lote copiado"); }
+  function renderResumen(){
+    const s=cur(); if(!s) return; const c=calc(s,bibs);
+    const fv=document.getElementById("lote-fecha").value, fecha=fv||new Date().toISOString().slice(0,10);
+    const autor=document.getElementById("lote-autor").value.trim()||"—";
+    document.getElementById("resumen").textContent =
+`LOTE: ${loteActual()}
+Salsa: ${s.emoji} ${s.nombre}
+Fecha: ${fecha}   Encargado: ${autor}
+Biberones (1 L): ${bibs}   ≈ ${c.burgers} burgers
+Coste lote: ${eur(c.costeLote)}   Coste/biberón: ${eur(c.costePorL)}   Coste/burger: ${eur(c.costePorBurger,3)}
+PVP salsero: ${s.pvpSalsero?eur(s.pvpSalsero):"—"}   Food Cost: ${s.pvpSalsero?fmt(c.fc,1)+"% "+c.sem:"—"}
+— Ingredientes —
+${s.ingredientes.map(i=>`· ${i.nombre}: ${med(i.cantidad*bibs,i.unidad)}`).join("\n")}`;
+  }
+  function copiarResumen(){ copy(document.getElementById("resumen").textContent,"Resumen copiado"); }
+  function copy(t,m){ if(navigator.clipboard){ navigator.clipboard.writeText(t).then(()=>toast(m)).catch(()=>fb(t,m)); } else fb(t,m); }
+  function fb(t,m){ const a=document.createElement("textarea"); a.value=t; document.body.appendChild(a); a.select(); try{document.execCommand("copy");toast(m);}catch(e){} a.remove(); }
+  function renderAutores(){ const a=JSON.parse(localStorage.getItem("cb_autores")||"[]"); document.getElementById("autores").innerHTML=a.map(x=>`<option value="${x}">`).join(""); }
+
+  document.getElementById("lote-fecha").value=new Date().toISOString().slice(0,10);
+  document.getElementById("lote-autor").addEventListener("input",renderResumen);
+  document.getElementById("lote-fecha").addEventListener("change",renderResumen);
+  renderAutores();
+  if(!DATA.salsas.length){ document.body.insertAdjacentHTML("beforeend","<p style='color:var(--red)'>No hay datos. Ejecuta <code>node sync-notion.mjs</code>.</p>"); }
+  else render();
+  </script>
 </body>
 </html>
