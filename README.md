@@ -6,8 +6,19 @@ litro y por burger, food cost, y genera nº de lote `CB-AAAAMMDD-NNN` para la DB
 **PRODUCCIONES**.
 
 - **Unidad base:** 1 biberón (1 L)
-- **Fuente de datos:** Notion (workspace Chamberí) → DBs **RECETAS** (Tipo = 🧂 Salsa) + **INGREDIENTES**
-- Misma arquitectura que la calculadora de postres (carpeta hermana).
+- **Fuente de datos:** Notion (workspace Chamberí) → DBs **RECETAS** + **INGREDIENTES**
+- Misma arquitectura que la [calculadora de postres](https://tweakeo.github.io/calculadora-postres/) (carpeta hermana).
+
+## ✅ Qué salsas aparecen en la web
+
+Solo aparecen las recetas de la DB **RECETAS** que cumplen **las dos** condiciones:
+
+1. `Tipo = 🧂 Salsa`
+2. `ESTADO = DESARROLLADA`
+
+Las salsas en `SIN DESARROLLO` o `DESARROLLANDO` **no se sincronizan** y no se ven
+en la calculadora. Para publicar una salsa basta con ponerle `ESTADO = DESARROLLADA`
+en Notion (y que tenga sus ingredientes en INGREDIENTES).
 
 ## 📂 Archivos
 | Archivo | Qué es |
@@ -15,36 +26,69 @@ litro y por burger, food cost, y genera nº de lote `CB-AAAAMMDD-NNN` para la DB
 | `index.html` | La calculadora (HTML+CSS+JS). Lee `data.js`. |
 | `data.js` | Datos generados desde Notion. No editar a mano. |
 | `sync-notion.mjs` | Regenera `data.js` desde Notion. |
-| `.env` | Tu `NOTION_TOKEN` (no se sube a git). |
+| `.github/workflows/sync-notion.yml` | Sincroniza solo en GitHub (programado + manual). |
+| `.env` | Tu `NOTION_TOKEN` para correr el sync en local (no se sube a git). |
 
-## 🔄 Actualizar desde Notion
+## 🔄 Cómo se actualiza la web (arquitectura)
+
+> **La web NO consulta Notion en vivo.** GitHub Pages es estático: no puede
+> guardar el token de forma segura ni saltarse el CORS de Notion. El patrón es:
+> Notion es la fuente de verdad → `sync-notion.mjs` "hornea" un `data.js` →
+> la web carga ese `data.js`. **Actualizar = volver a sincronizar + push.**
+
+Hay **3 maneras** de lanzar esa sincronización. Conviven:
+
+### 1) Automático cada 30 min (ya activo, sin hacer nada)
+El workflow `sync-notion.yml` corre en GitHub cada 30 minutos: lee Notion y, si
+algo cambió, actualiza `data.js` y republica. Marca una salsa como `DESARROLLADA`
+y en ≤30 min estará en la web. **Es el modo por defecto.**
+
+### 2) Manual desde GitHub (instantáneo)
+GitHub → pestaña **Actions** → workflow **“Sync desde Notion”** → **Run workflow**.
+
+### 3) Manual desde tu ordenador
 ```bash
 cp .env.example .env        # 1ª vez; pega tu NOTION_TOKEN
 node sync-notion.mjs        # regenera data.js
 git add data.js && git commit -m "sync salsas" && git push
 ```
-Requiere Node 18+. El script lee RECETAS (Tipo = 🧂 Salsa) e INGREDIENTES, y
-saca descripción/perfil sensorial/método del cuerpo de cada receta.
+Requiere Node 18+. El secret `NOTION_TOKEN` ya está configurado en GitHub para
+los modos 1 y 2.
 
-## 🌐 Publicar
-La calculadora antigua vivía en `tweakeo.github.io/calculadora-salsas` (cuenta
-ajena). Para esta versión, sube la carpeta a un repo propio (p. ej.
-`LeonMAG/calculadora-salsas`) → Settings → Pages → branch `main`, y actualiza el
-**embed** en la página de Notion *LABORATORIO DE SALSAS* a la nueva URL.
+## 🟢 Botón “Sincronizar” desde Notion (opcional, instantáneo)
+
+Para disparar la sincronización con un botón dentro de Notion necesitas un
+pequeño “relay” que llame a la API de GitHub con autenticación (Notion por sí
+solo no puede mandar la cabecera `Authorization`). Endpoint a llamar:
+
+```
+POST https://api.github.com/repos/tweakeo/calculadora-salsas/dispatches
+Headers: Authorization: Bearer <PAT>   ·   Accept: application/vnd.github+json
+Body:    { "event_type": "sync-notion" }
+```
+
+Eso dispara el modo (3) `repository_dispatch`. Dos formas de montarlo:
+
+### Opción A — Make.com / Zapier / Pipedream (no-code, recomendada)
+1. Crea un escenario con disparador **Webhook** → copia su URL.
+2. En Notion: botón (o automatización *Cuando ESTADO → DESARROLLADA → Enviar
+   webhook*) que llame a esa URL.
+3. En Make/Zapier: paso **HTTP → POST** al endpoint de arriba con
+   `Authorization: Bearer <PAT>` y body `{"event_type":"sync-notion"}`.
+4. El PAT es un **fine-grained token** de GitHub con *Contents: Read/Write*
+   limitado a este repo. Guárdalo en el relay, **nunca en Notion**.
+
+### Opción B — Cloudflare Worker (gratis, self-hosted)
+El mismo worker sirve para los dos repos (detecta "salsas"/"postres" por la ruta);
+ver el código en el README de la calculadora de postres. El botón de Notion abre
+`https://<worker>.workers.dev/salsas?key=<SECRET>`.
+
+> **¿Hace falta el botón?** No: con el modo (1) la web ya se mantiene sola cada
+> 30 min. El botón solo sirve para que el cambio sea inmediato.
 
 ## ⚠️ Estado de los datos en Notion (a fecha del último sync)
-La migración dejó las salsas con datos **incompletos**; la calculadora ya avisa
-con `coste ej.` donde toca. Pendiente de arreglar en Notion:
-- **Costes**: la mayoría de ingredientes no tienen coste real (falta `CANT. PACK`
-  en INVENTARIO). Mientras tanto se usan los costes **validados de la calculadora
-  original** (Mayonesa 0,00251 €/g, etc.) como ejemplo.
-- **BBQ Ahumada**: las cantidades suman solo ~237 g/L → faltan ingredientes o
-  cantidades en su receta. Revisar.
-- **Precio Burger** vacío en todas; el food cost se calcula contra **PVP Salsero**
-  (0,99 / 1,29 / 1,49 €).
-- **Perfil sensorial / método**: las 7 salsas originales tienen perfil de respaldo;
-  las 5 nuevas (Alioli, Verde Jalapeño, Kimchi, Mostaza Miel, Blue Cheese) lo
-  tomarán del cuerpo de su página en Notion cuando lo tengan.
-
-En cuanto completes esos datos en Notion y ejecutes `node sync-notion.mjs`, la
-calculadora se actualiza sola con los valores reales.
+La calculadora avisa con `coste ej.` donde el coste aún no es real. Pendiente en
+Notion: rellenar `CANT. PACK` en INVENTARIO (mientras tanto se usan los costes
+validados de la calculadora original), revisar cantidades de **BBQ Ahumada**
+(~237 g/L), y `Precio Burger` vacío (el food cost se calcula contra **PVP Salsero**).
+En cuanto completes esos datos y vuelvas a sincronizar, se actualiza solo.
