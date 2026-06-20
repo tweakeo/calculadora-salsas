@@ -84,8 +84,13 @@ async function readBody(pageId){
   return { notas, metodo, sensorial };
 }
 
-console.log("→ Leyendo RECETAS (Tipo = 🧂 Salsa)…");
-const recetas = await queryAll(DS_RECETAS, { property:"Tipo", select:{ equals:"🧂 Salsa" } });
+// Solo se sincronizan las recetas con ESTADO = DESARROLLADA (las que están
+// "SIN DESARROLLO" o "DESARROLLANDO" se ignoran y NO aparecen en la web).
+console.log("→ Leyendo RECETAS (Tipo = 🧂 Salsa · ESTADO = DESARROLLADA)…");
+const recetas = await queryAll(DS_RECETAS, { and:[
+  { property:"Tipo",   select:{ equals:"🧂 Salsa" } },
+  { property:"ESTADO", status:{ equals:"DESARROLLADA" } },
+]});
 console.log("→ Leyendo INGREDIENTES…");
 const ingredientes = await queryAll(DS_INGREDIENTES);
 
