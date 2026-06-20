@@ -3,18 +3,15 @@ name: Sync desde Notion
 # Regenera data.js leyendo Notion (solo recetas con ESTADO = DESARROLLADA) y,
 # si hay cambios, los commitea. GitHub Pages se redespliega solo.
 #
-# Se dispara de 3 formas:
-#  1) schedule  → automático cada 30 min (recoge cambios de ESTADO sin tocar nada)
-#  2) workflow_dispatch → botón "Run workflow" en la pestaña Actions de GitHub
-#  3) repository_dispatch (event_type: sync-notion) → webhook externo,
-#     p. ej. el botón/automatización de Notion a través de un relay (ver README).
+# Sincronización MANUAL (no hay disparo automático). Se lanza de 2 formas:
+#  1) workflow_dispatch → botón "Run workflow" en la pestaña Actions de GitHub
+#  2) repository_dispatch (event_type: sync-notion) → botón de Notion a través
+#     de un relay (ver README).
 
 on:
   workflow_dispatch:
   repository_dispatch:
     types: [sync-notion]
-  schedule:
-    - cron: '*/30 * * * *'
 
 permissions:
   contents: write
