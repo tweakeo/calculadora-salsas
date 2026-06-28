@@ -2,7 +2,7 @@
 window.SALSAS_DATA = {
   "_meta": {
     "fuente": "Notion — DESARROLLO DE SALSAS (Chamberí)",
-    "generado": "2026-06-20",
+    "generado": "2026-06-28",
     "baseUnidad": "1 biberón (1 L)",
     "lotePrefix": "CB",
     "marca": "Chamberí Brothers",
@@ -125,6 +125,97 @@ window.SALSAS_DATA = {
           "unidad": "ml",
           "costePorUnidad": 0.005,
           "ejemplo": true
+        }
+      ]
+    },
+    {
+      "id": "trufadita",
+      "emoji": "🍄",
+      "nombre": "TRUFADITA",
+      "estado": "DESARROLLADA",
+      "sxb": 35,
+      "rendimiento": 1,
+      "pvpSalsero": 1.49,
+      "precioBurger": null,
+      "alergenos": [],
+      "sensorial": {
+        "Dulzor": 0,
+        "Acidez": 2,
+        "Picante": 0,
+        "Ahumado": 0,
+        "Umami": 8
+      },
+      "notas": "Salsa cremosa con aceite de trufa negra sobre base de mayonesa, potenciada con glutamato para intensificar el perfil umami. Perfil elegante y muy diferenciado del resto del catálogo. Indicada para burgers premium o como dip de temporada.",
+      "metodo": [
+        "Pesar todos los ingredientes por separado",
+        "Mezclar mayonesa con ajo en polvo, limón en polvo y glutamato — integrar completamente",
+        "Incorporar la salsa tartufata (35 g) — mezclar a velocidad media hasta integrar por completo",
+        "Añadir el aceite de trufa (25 ml) MUY LENTAMENTE en hilo fino mientras se bate a velocidad mínima — emulsionar sin romper la mayo",
+        "Añadir sal y pimienta negra",
+        "Añadir agua fría muy poco a poco para ajustar textura si necesario",
+        "Homogeneizar 2-3 min a velocidad mínima — la trufa es delicada, no sobremezclar",
+        "Probar: el aroma debe ser profundo, terroso y persistente pero no agresivo",
+        "Reposar 1 h en frío antes de envasar — el aroma se asienta y equilibra",
+        "Envasar en biberones de 1 L — etiquetar con fecha y lote"
+      ],
+      "ingredientes": [
+        {
+          "nombre": "SALSA TARTUFATA METRO CHEF",
+          "cantidad": 35,
+          "unidad": "g",
+          "costePorUnidad": 0.02016
+        },
+        {
+          "nombre": "ACEITE DE TRUFA METRO CHEF",
+          "cantidad": 25,
+          "unidad": "ml",
+          "costePorUnidad": 0.01608
+        },
+        {
+          "nombre": "SAL",
+          "cantidad": 5,
+          "unidad": "g",
+          "costePorUnidad": 0.005,
+          "ejemplo": true
+        },
+        {
+          "nombre": "GLUTAMATO MONOSÓDICO",
+          "cantidad": 0.9,
+          "unidad": "g",
+          "costePorUnidad": 0.005,
+          "ejemplo": true
+        },
+        {
+          "nombre": "PIMIENTA NEGRA",
+          "cantidad": 4.1,
+          "unidad": "g",
+          "costePorUnidad": 0.018763636364
+        },
+        {
+          "nombre": "AGUA",
+          "cantidad": 8.6,
+          "unidad": "ml",
+          "costePorUnidad": 0.005,
+          "ejemplo": true
+        },
+        {
+          "nombre": "MAYONESA",
+          "cantidad": 654.5,
+          "unidad": "g",
+          "costePorUnidad": 0.005,
+          "ejemplo": true
+        },
+        {
+          "nombre": "LIMÓN EN POLVO",
+          "cantidad": 18.2,
+          "unidad": "g",
+          "costePorUnidad": 0.003025
+        },
+        {
+          "nombre": "AJO EN POLVO",
+          "cantidad": 15.5,
+          "unidad": "g",
+          "costePorUnidad": 0.0114
         }
       ]
     }

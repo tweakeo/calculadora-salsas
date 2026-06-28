@@ -5,135 +5,268 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Calculadora de Salsas — Chamberí Brothers</title>
   <style>
-    :root {
-      --bg-0:#0e0f13; --bg-1:#15171d; --bg-2:#1c1f27; --bg-3:#262a34;
-      --border:#2c313c; --border-2:#3a4150;
-      --text:#e7e9ee; --text-2:#9aa1b1; --text-3:#6b7280;
-      --accent:#e9b44c; --accent-2:#c98f2c; --green:#56c08d; --yellow:#e3c05a; --red:#e07a6e;
-      --radius:14px; --radius-sm:9px;
+    /* ===================================================================
+       Calculadora de Salsas — sobre el Design System de Paletos Club
+       (papel + tinta, bordes duros, sombras "stamp", display slab)
+       =================================================================== */
+    @font-face {
+      font-family:"Chunk Five Print";
+      src:url("assets/fonts/Chunk Five Print.ttf?v=1") format("truetype");
+      font-weight:400; font-style:normal; font-display:swap;
     }
-    * { box-sizing:border-box; margin:0; padding:0; }
-    body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      background:var(--bg-0); color:var(--text); line-height:1.45; padding:24px 16px 64px; max-width:760px; margin:0 auto; -webkit-font-smoothing:antialiased; }
-    h1 { font-size:21px; font-weight:700; letter-spacing:-.02em; }
-    .sub { color:var(--text-2); font-size:13px; margin-top:3px; }
-    .src-pill { display:inline-block; margin-top:8px; font-size:11px; color:var(--text-3); background:var(--bg-1); border:1px solid var(--border); padding:3px 9px; border-radius:999px; }
-    .selector { display:flex; flex-wrap:wrap; gap:8px; margin:20px 0 18px; }
-    .chip { display:flex; align-items:center; gap:7px; padding:9px 14px; cursor:pointer; background:var(--bg-1); border:1px solid var(--border); border-radius:999px; font-size:14px; font-weight:600; color:var(--text-2); transition:.12s; }
-    .chip:hover { border-color:var(--border-2); color:var(--text); }
-    .chip.active { background:var(--accent); border-color:var(--accent); color:#1a1407; }
-    .chip .em { font-size:16px; }
-    .card { background:var(--bg-1); border:1px solid var(--border); border-radius:var(--radius); padding:18px; margin-bottom:16px; }
-    .card-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:4px; }
-    .card-title { display:flex; align-items:center; gap:10px; font-size:18px; font-weight:700; }
-    .card-title .em { font-size:24px; }
-    .cat { font-size:11px; color:var(--text-2); background:var(--bg-3); padding:3px 9px; border-radius:999px; }
-    .notas { color:var(--text-2); font-size:13px; margin-top:8px; }
-    .alg { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
-    .alg span { font-size:11px; background:var(--bg-2); border:1px solid var(--border); padding:2px 8px; border-radius:999px; color:var(--text-2); }
-    .control { display:flex; align-items:center; gap:14px; margin:6px 0 2px; flex-wrap:wrap; }
-    .control-label { font-size:13px; color:var(--text-2); }
-    .stepper { display:flex; align-items:center; background:var(--bg-2); border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; }
-    .stepper button { width:42px; height:42px; border:none; background:transparent; color:var(--text); font-size:22px; cursor:pointer; transition:.1s; }
-    .stepper button:hover { background:var(--bg-3); }
-    .stepper input { width:64px; height:42px; border:none; background:transparent; color:var(--text); text-align:center; font-size:18px; font-weight:700; -moz-appearance:textfield; }
-    .stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{ -webkit-appearance:none; }
+    @import url("https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Archivo:wght@400;500;600;700;900&family=Space+Mono:wght@400;700&display=swap");
+
+    :root {
+      --pc-ink:#0E0E0E; --pc-ink-soft:#1A1A1A;
+      --pc-paper:#F6F1E7; --pc-paper-pure:#FFFFFF;
+      --pc-red:#D7261E; --pc-red-deep:#A81812;
+      --pc-yellow:#F5C518; --pc-yellow-deep:#D9A800;
+      --pc-grey-700:#423F3B; --pc-grey-500:#7A7770;
+      --pc-grey-300:#C9C3B5; --pc-grey-200:#E2DCCC; --pc-grey-100:#EFEADD;
+      --green:#2F7D3A; --red:#C0392B;
+      /* acento de producto (salsas = dorado) */
+      --accent:#D9A800; --accent-deep:#A87F00;
+
+      --font-display:"Chunk Five Print","Alfa Slab One","Roboto Slab",Georgia,serif;
+      --font-body:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+      --font-mono:"Space Mono",ui-monospace,Menlo,monospace;
+      --shadow-stamp:4px 4px 0 0 var(--pc-ink);
+      --shadow-stamp-accent:4px 4px 0 0 var(--accent);
+      --ease-out:cubic-bezier(.2,.8,.2,1);
+      --ease-snap:cubic-bezier(.7,-0.2,.3,1.4);
+    }
+    * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+    [hidden] { display:none !important; }
+    html,body {
+      background:var(--pc-paper); color:var(--pc-ink);
+      font-family:var(--font-body); font-size:16px; line-height:1.45;
+      -webkit-font-smoothing:antialiased;
+      background-image:radial-gradient(var(--pc-grey-200) .5px, transparent .5px);
+      background-size:7px 7px;
+    }
+    .app { max-width:820px; margin:0 auto; padding:0 16px 96px; }
+
+    .stickyhead { position:sticky; top:0; z-index:30; background:var(--pc-paper); }
+    .topbar { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; padding:20px 0 14px; }
+    .eyebrow { display:block; font-weight:700; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--pc-red); margin-bottom:5px; }
+    .topbar__title { font-family:var(--font-display); font-weight:400; line-height:.92; font-size:clamp(30px,6.5vw,52px); text-transform:uppercase; letter-spacing:-.01em; }
+    .topbar__date { display:block; margin-top:7px; font-family:var(--font-mono); font-size:12px; color:var(--pc-grey-500); }
+    .topbar__right { display:flex; gap:10px; flex-shrink:0; }
+    .viewtoggle {
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+      min-width:78px; padding:9px 10px; cursor:pointer;
+      background:var(--pc-paper-pure); color:var(--pc-ink);
+      border:2px solid var(--pc-ink); box-shadow:var(--shadow-stamp);
+      font-family:var(--font-display); text-transform:uppercase;
+      transition:transform 90ms var(--ease-out), box-shadow 90ms var(--ease-out), background 120ms;
+    }
+    .viewtoggle__icon { font-size:24px; line-height:1; }
+    .viewtoggle__label { font-size:11px; }
+    .viewtoggle__label b { color:var(--accent-deep); font-family:var(--font-mono); }
+    .viewtoggle:hover { background:var(--pc-yellow); }
+    .viewtoggle:active { transform:translate(3px,3px); box-shadow:none; }
+    .viewtoggle.is-active { background:var(--pc-ink); color:var(--pc-paper); box-shadow:var(--shadow-stamp-accent); }
+    .viewtoggle.is-active .viewtoggle__label b { color:var(--pc-yellow); }
+
+    .selector { display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 18px; }
+    .chip {
+      display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:0 15px; cursor:pointer;
+      background:var(--pc-paper-pure); border:2px solid var(--pc-ink); border-radius:999px;
+      font-size:14px; font-weight:700; color:var(--pc-ink);
+      transition:transform 90ms var(--ease-out), box-shadow 90ms, background 120ms;
+    }
+    .chip:hover { background:var(--pc-grey-100); }
+    .chip.active { background:var(--pc-yellow); box-shadow:3px 3px 0 0 var(--pc-ink); }
+    .chip .em { font-size:17px; }
+
+    .card { background:var(--pc-paper-pure); border:2px solid var(--pc-ink); box-shadow:var(--shadow-stamp); padding:18px; margin-bottom:18px; }
+    .card-head { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .card-title { display:flex; align-items:center; gap:11px; font-family:var(--font-display); font-size:26px; text-transform:uppercase; line-height:1; }
+    .card-title .em { font-size:30px; }
+    .notas { color:var(--pc-grey-700); font-size:13.5px; margin-top:10px; }
+    .alg { display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; }
+    .alg span { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.02em; background:var(--pc-grey-100); border:1.5px solid var(--pc-ink); padding:3px 9px; border-radius:999px; }
+    .col-title { font-family:var(--font-display); font-size:17px; text-transform:uppercase; letter-spacing:0; margin-bottom:13px; display:flex; align-items:center; gap:8px; }
+
+    .control { display:flex; align-items:center; gap:14px; margin:16px 0 2px; flex-wrap:wrap; }
+    .control-label { font-family:var(--font-mono); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--pc-grey-500); }
+    .stepper { display:flex; align-items:center; background:var(--pc-paper-pure); border:2px solid var(--pc-ink); overflow:hidden; }
+    .stepper button { width:44px; height:44px; border:none; background:var(--pc-paper-pure); color:var(--pc-ink); font-size:24px; font-weight:700; cursor:pointer; transition:.1s; }
+    .stepper button:hover { background:var(--pc-yellow); }
+    .stepper button:active { background:var(--pc-yellow-deep); }
+    .stepper input { width:62px; height:44px; border:none; border-left:2px solid var(--pc-ink); border-right:2px solid var(--pc-ink); background:var(--pc-paper-pure); color:var(--pc-ink); text-align:center; font-size:18px; font-weight:700; font-family:var(--font-mono); -moz-appearance:textfield; }
+    .stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
     .quick { display:flex; gap:6px; }
-    .quick button { padding:6px 11px; font-size:12px; background:var(--bg-2); border:1px solid var(--border); border-radius:999px; color:var(--text-2); cursor:pointer; }
-    .quick button:hover { border-color:var(--border-2); color:var(--text); }
-    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:16px; }
-    .stat { background:var(--bg-2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px; text-align:center; }
-    .stat-val { font-size:19px; font-weight:700; letter-spacing:-.02em; }
-    .stat-label { font-size:11px; color:var(--text-2); margin-top:3px; }
+    .quick button { min-height:34px; padding:0 12px; font-size:12px; font-weight:700; background:var(--pc-paper-pure); border:2px solid var(--pc-ink); border-radius:999px; cursor:pointer; transition:.1s; }
+    .quick button:hover { background:var(--pc-yellow); }
+
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:18px; }
+    .stat { background:var(--pc-grey-100); border:2px solid var(--pc-ink); padding:12px 10px; text-align:center; }
+    .stat-val { font-family:var(--font-display); font-size:20px; line-height:1.05; }
+    .stat-label { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--pc-grey-500); margin-top:5px; }
     .stat.semaforo .stat-val { font-size:15px; }
-    .col-title { font-size:13px; font-weight:700; color:var(--text-2); text-transform:uppercase; letter-spacing:.04em; margin:4px 0 10px; }
-    .ing { display:grid; grid-template-columns:1fr 92px 76px; align-items:baseline; gap:12px; padding:7px 0; border-bottom:1px solid var(--border); }
+
+    .ing { display:grid; grid-template-columns:1fr 96px 78px; align-items:baseline; gap:12px; padding:8px 0; border-bottom:1px solid var(--pc-grey-200); }
     .ing:last-child { border-bottom:none; }
     .ing-name { font-size:14px; min-width:0; }
-    .ing-name .ex { color:var(--yellow); font-size:11px; margin-left:5px; }
-    .ing-qty { font-size:14px; font-weight:600; white-space:nowrap; text-align:right; font-variant-numeric:tabular-nums; }
-    .ing-cost { font-size:12px; color:var(--text-3); text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
-    .ing-foot { display:grid; grid-template-columns:1fr 76px; gap:12px; padding-top:11px; margin-top:4px; font-weight:700; font-size:14px; }
-    .ing-foot span:last-child { text-align:right; font-variant-numeric:tabular-nums; }
+    .ing-name .ex { color:var(--pc-red); font-size:11px; font-weight:700; margin-left:5px; }
+    .ing-qty { font-size:14px; font-weight:700; text-align:right; white-space:nowrap; font-family:var(--font-mono); }
+    .ing-cost { font-size:12px; color:var(--pc-grey-500); text-align:right; white-space:nowrap; font-family:var(--font-mono); }
+    .ing-foot { display:grid; grid-template-columns:1fr 78px; gap:12px; padding-top:12px; margin-top:6px; border-top:2px solid var(--pc-ink); font-weight:700; font-size:14px; }
+    .ing-foot.soft { border-top:none; padding-top:6px; margin-top:0; font-weight:600; color:var(--pc-grey-700); }
+    .ing-foot span:last-child { text-align:right; font-family:var(--font-mono); }
+
     .sens { display:flex; flex-direction:column; gap:9px; }
     .sens-row { display:flex; align-items:center; gap:10px; }
-    .sens-label { font-size:13px; color:var(--text-2); width:110px; }
-    .sens-bar { flex:1; height:8px; background:var(--bg-3); border-radius:999px; overflow:hidden; }
-    .sens-fill { height:100%; background:linear-gradient(90deg,var(--accent-2),var(--accent)); border-radius:999px; }
-    ol.metodo { padding-left:20px; display:flex; flex-direction:column; gap:7px; }
-    ol.metodo li { font-size:13.5px; padding-left:4px; } ol.metodo li::marker { color:var(--accent); font-weight:700; }
+    .sens-label { font-size:13px; color:var(--pc-grey-700); width:110px; }
+    .sens-bar { flex:1; height:10px; background:var(--pc-grey-100); border:1.5px solid var(--pc-ink); overflow:hidden; }
+    .sens-fill { height:100%; background:var(--accent); }
+
+    ol.metodo { padding-left:22px; display:flex; flex-direction:column; gap:7px; }
+    ol.metodo li { font-size:13.5px; padding-left:4px; }
+    ol.metodo li::marker { color:var(--accent-deep); font-weight:700; }
+
+    .btn { min-height:42px; padding:0 16px; border:2px solid var(--pc-ink); background:var(--pc-paper-pure); color:var(--pc-ink); font-family:var(--font-body); font-size:13px; font-weight:700; cursor:pointer; box-shadow:var(--shadow-stamp); transition:transform 90ms var(--ease-out), box-shadow 90ms, background 120ms; }
+    .btn:hover { background:var(--pc-yellow); }
+    .btn:active { transform:translate(3px,3px); box-shadow:none; }
+    .btn-accent { background:var(--accent); color:var(--pc-ink); }
+    .btn-accent:hover { background:var(--accent-deep); color:#fff; }
+    .btn-sm { min-height:36px; padding:0 12px; box-shadow:2px 2px 0 0 var(--pc-ink); font-size:12px; }
     .lote-strip { display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
-    .lote-label { font-size:13px; font-weight:700; color:var(--text-2); }
-    .lote-inp { height:38px; background:var(--bg-2); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); padding:0 11px; font-size:13px; }
-    #lote-fecha { width:150px; } #lote-autor { width:150px; }
-    .lote-inp:focus { outline:none; border-color:var(--accent); }
-    .btn { height:38px; padding:0 16px; border:1px solid var(--border-2); background:var(--bg-3); color:var(--text); border-radius:var(--radius-sm); font-size:13px; font-weight:600; cursor:pointer; transition:.12s; }
-    .btn:hover { background:var(--border-2); }
-    .btn-accent { background:var(--accent); border-color:var(--accent); color:#1a1407; }
-    .btn-accent:hover { background:var(--accent-2); }
-    .lote-result { display:none; align-items:center; gap:9px; margin-top:12px; padding:11px 14px; background:var(--bg-2); border:1px dashed var(--accent-2); border-radius:var(--radius-sm); }
+    .lote-label { font-family:var(--font-mono); font-size:12px; font-weight:700; text-transform:uppercase; color:var(--pc-grey-500); }
+    .lote-inp { height:42px; background:var(--pc-paper-pure); border:2px solid var(--pc-ink); color:var(--pc-ink); padding:0 11px; font-size:13px; font-family:var(--font-body); }
+    #lote-fecha { width:160px; } #lote-autor { width:160px; }
+    .lote-inp:focus { outline:none; background:var(--pc-grey-100); }
+    .lote-result { display:none; align-items:center; gap:10px; margin-top:14px; padding:12px 14px; background:var(--pc-grey-100); border:2px dashed var(--accent); }
     .lote-result.visible { display:flex; }
-    .lote-num { font-size:16px; font-weight:700; letter-spacing:.02em; font-family:ui-monospace,Menlo,monospace; color:var(--accent); }
-    .resumen-box { margin-top:12px; }
-    pre.resumen { background:var(--bg-0); border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px; font-size:12px; color:var(--text-2); white-space:pre-wrap; font-family:ui-monospace,Menlo,monospace; max-height:230px; overflow:auto; }
-    .warn { font-size:12px; color:var(--yellow); background:rgba(227,192,90,.08); border:1px solid rgba(227,192,90,.25); border-radius:var(--radius-sm); padding:9px 12px; margin-top:12px; }
-    #toast { position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(20px); opacity:0; pointer-events:none; background:var(--accent); color:#1a1407; font-weight:600; font-size:13px; padding:10px 18px; border-radius:999px; transition:.25s; z-index:50; }
-    #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-    @media (max-width:560px){ .stats{ grid-template-columns:repeat(2,1fr); } #lote-fecha,#lote-autor{ width:100%; } }
+    .lote-num { font-size:17px; font-weight:700; letter-spacing:.02em; font-family:var(--font-mono); color:var(--accent-deep); }
+    .resumen-box { margin-top:14px; }
+    pre.resumen { background:var(--pc-ink); color:var(--pc-paper); border:2px solid var(--pc-ink); padding:14px; font-size:12px; white-space:pre-wrap; font-family:var(--font-mono); max-height:280px; overflow:auto; }
+    .warn { font-size:12px; color:var(--pc-red-deep); background:rgba(215,38,30,.07); border:1.5px solid var(--pc-red); padding:9px 12px; margin-top:12px; font-weight:600; }
+
+    .cesta-bar { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+    .cesta-row { display:grid; grid-template-columns:auto 1fr auto auto; align-items:center; gap:12px; padding:9px 0; border-bottom:1px solid var(--pc-grey-200); }
+    .cesta-row:last-child { border-bottom:none; }
+    .cesta-row.in { background:rgba(245,197,24,.10); margin:0 -8px; padding:9px 8px; }
+    .cr-em { font-size:20px; }
+    .cr-name { font-size:14px; font-weight:600; min-width:0; }
+    .cr-sub { font-size:12px; font-family:var(--font-mono); color:var(--pc-grey-500); width:74px; text-align:right; white-space:nowrap; }
+    .cesta-row .stepper { transform:scale(.92); }
+    .cesta-empty { text-align:center; padding:34px 16px; color:var(--pc-grey-500); }
+    .cesta-empty .big { font-size:46px; }
+
+    .toast { position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(140%); background:var(--pc-ink); color:var(--pc-paper); font-weight:700; padding:13px 22px; box-shadow:var(--shadow-stamp); z-index:100; transition:transform 280ms var(--ease-snap), opacity 200ms; max-width:90vw; text-align:center; opacity:0; }
+    .toast.is-show { transform:translateX(-50%) translateY(0); opacity:1; }
+
+    @media (max-width:560px){
+      .stats { grid-template-columns:repeat(2,1fr); }
+      #lote-fecha,#lote-autor { width:100%; }
+      .cesta-row { grid-template-columns:auto 1fr auto; }
+      .cesta-row .cr-sub { grid-column:2 / -1; text-align:left; width:auto; }
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>🧮 Calculadora de Salsas</h1>
-    <div class="sub">Chamberí Brothers — producción de salsas en biberón · unidad base = 1 biberón (1 L)</div>
-    <span class="src-pill" id="src-pill">Datos: Notion</span>
-  </header>
-
-  <div class="selector" id="selector"></div>
-  <div class="card" id="card-receta"></div>
-
-  <div class="card">
-    <div class="col-title">🧾 Ingredientes para la producción</div>
-    <div id="ingredientes"></div>
-  </div>
-  <div class="card">
-    <div class="col-title">🌶 Perfil sensorial</div>
-    <div class="sens" id="sensorial"></div>
-  </div>
-  <div class="card" id="card-metodo" style="display:none">
-    <div class="col-title">📋 Método</div>
-    <ol class="metodo" id="metodo"></ol>
-  </div>
-
-  <div class="card">
-    <div class="col-title">🏷️ Lote de producción</div>
-    <div class="lote-strip">
-      <span class="lote-label">Nº Lote</span>
-      <input type="date" id="lote-fecha" class="lote-inp" />
-      <input type="text" id="lote-autor" class="lote-inp" placeholder="Encargado" list="autores" autocomplete="off" />
-      <datalist id="autores"></datalist>
-      <button class="btn btn-accent" onclick="generarLote()">🚀 Generar lote</button>
+  <div class="app">
+    <div class="stickyhead">
+      <div class="topbar">
+        <div>
+          <span class="eyebrow">Chamberí Brothers · Producción</span>
+          <h1 class="topbar__title">🧮 Salsas</h1>
+          <span class="topbar__date" id="src-pill">Datos: Notion</span>
+        </div>
+        <div class="topbar__right">
+          <div class="viewtoggle is-active" id="vt-calc" onclick="setView('calc')">
+            <span class="viewtoggle__icon">🧂</span><span class="viewtoggle__label">Receta</span>
+          </div>
+          <div class="viewtoggle" id="vt-cesta" onclick="setView('cesta')">
+            <span class="viewtoggle__icon">🧺</span><span class="viewtoggle__label">Cesta <b id="cesta-badge"></b></span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="lote-result" id="lote-result">
-      <span class="lote-num" id="lote-num"></span>
-      <button class="btn" onclick="copiarLote()">📋 Copiar</button>
-    </div>
-    <div class="resumen-box">
-      <pre class="resumen" id="resumen"></pre>
-      <button class="btn" style="margin-top:10px" onclick="copiarResumen()">📋 Copiar resumen para PRODUCCIONES</button>
-    </div>
+
+    <!-- ════════ VISTA: CALCULADORA (una salsa) ════════ -->
+    <section id="view-calc">
+      <div class="selector" id="selector"></div>
+      <div class="card" id="card-receta"></div>
+
+      <div class="card">
+        <div class="col-title">🧾 Ingredientes para la producción</div>
+        <div id="ingredientes"></div>
+      </div>
+      <div class="card">
+        <div class="col-title">🌶 Perfil sensorial</div>
+        <div class="sens" id="sensorial"></div>
+      </div>
+      <div class="card" id="card-metodo" style="display:none">
+        <div class="col-title">📋 Método</div>
+        <ol class="metodo" id="metodo"></ol>
+      </div>
+
+      <div class="card">
+        <div class="col-title">🏷️ Lote de producción</div>
+        <div class="lote-strip">
+          <span class="lote-label">Nº Lote</span>
+          <input type="date" id="lote-fecha" class="lote-inp" />
+          <input type="text" id="lote-autor" class="lote-inp" placeholder="Encargado" list="autores" autocomplete="off" />
+          <datalist id="autores"></datalist>
+          <button class="btn btn-accent" onclick="generarLote()">🚀 Generar lote</button>
+        </div>
+        <div class="lote-result" id="lote-result">
+          <span class="lote-num" id="lote-num"></span>
+          <button class="btn btn-sm" onclick="copiarLote()">📋 Copiar</button>
+        </div>
+        <div class="resumen-box">
+          <pre class="resumen" id="resumen"></pre>
+          <button class="btn btn-sm" style="margin-top:10px" onclick="copiarResumen()">📋 Copiar resumen para PRODUCCIONES</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ VISTA: CESTA DE PREPARACIONES ════════ -->
+    <section id="view-cesta" hidden>
+      <div class="card">
+        <div class="cesta-bar">
+          <div class="col-title" style="margin:0">🧺 Composición de la cesta</div>
+          <button class="btn btn-sm" onclick="vaciarCesta()">🗑 Vaciar</button>
+        </div>
+        <div id="cesta-comp"></div>
+      </div>
+
+      <div class="card">
+        <div class="col-title">🧾 Suma global de ingredientes (mise en place)</div>
+        <div id="cesta-ing"></div>
+      </div>
+
+      <div class="card">
+        <div class="col-title">📋 Resumen de la cesta</div>
+        <div class="lote-strip" style="margin-bottom:4px">
+          <span class="lote-label">Fecha</span>
+          <input type="date" id="cesta-fecha" class="lote-inp" />
+          <button class="btn btn-accent" onclick="copiarCesta()">📋 Copiar lista de producción</button>
+        </div>
+        <div class="resumen-box">
+          <pre class="resumen" id="cesta-resumen"></pre>
+        </div>
+      </div>
+    </section>
   </div>
 
-  <div id="toast"></div>
+  <div class="toast" id="toast"></div>
 
   <script src="data.js"></script>
   <script>
+  // ─── STATE ────────────────────────────────────────────────────────────────
   const DATA = window.SALSAS_DATA || { _meta:{}, salsas:[] };
   const META = DATA._meta || {};
   const PREFIX = META.lotePrefix || "CB";
   let currentId = (DATA.salsas[0]||{}).id;
   let bibs = 1;
+  let view = "calc";
+  let CESTA = loadCesta();                         // { salsaId: nBiberones }
 
+  // ─── HELPERS ──────────────────────────────────────────────────────────────
   const fmt = (n,d=2)=> (Number(n)||0).toFixed(d).replace(".",",");
   const eur = (n,d=2)=> fmt(n,d)+" €";
   const wt  = n => n>=1000 ? fmt(n/1000,2)+" kg" : (Math.round(n*10)/10)+" g";
@@ -141,8 +274,11 @@
   const med = (n,u)=> u==="ml" ? vol(n) : wt(n);
   const cur = () => DATA.salsas.find(s=>s.id===currentId) || DATA.salsas[0];
   function isoDate(d){ return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}`; }
-  function toast(m){ const t=document.getElementById("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),2200); }
+  function toast(m){ const t=document.getElementById("toast"); t.textContent=m; t.classList.add("is-show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("is-show"),2200); }
+  function loadCesta(){ try{ return JSON.parse(localStorage.getItem("cb_cesta")||"{}"); }catch(e){ return {}; } }
+  function saveCesta(){ localStorage.setItem("cb_cesta", JSON.stringify(CESTA)); }
 
+  // ─── CÁLCULO ────────────────────────────────────────────────────────────────
   function calc(s, n){
     const costeIngPorBib = s.ingredientes.reduce((a,i)=>a + i.cantidad*(i.costePorUnidad||0), 0); // €/biberón (1 L)
     const costeLote = costeIngPorBib * n;
@@ -156,6 +292,20 @@
     return { costeIngPorBib, costeLote, costePorL, costePorBurger, margen, fc, sem, pvp, burgers };
   }
 
+  // ─── VISTAS ─────────────────────────────────────────────────────────────────
+  function setView(v){
+    view = v;
+    document.getElementById("view-calc").hidden  = v!=="calc";
+    document.getElementById("view-cesta").hidden = v!=="cesta";
+    document.getElementById("vt-calc").classList.toggle("is-active", v==="calc");
+    document.getElementById("vt-cesta").classList.toggle("is-active", v==="cesta");
+    if(v==="cesta") renderCesta();
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+  function cestaCount(){ return Object.values(CESTA).reduce((a,b)=>a+(b||0),0); }
+  function refreshBadge(){ const n=cestaCount(); document.getElementById("cesta-badge").textContent = n?`· ${n}`:""; }
+
+  // ─── RENDER CALCULADORA ─────────────────────────────────────────────────────
   function renderSelector(){
     document.getElementById("selector").innerHTML = DATA.salsas.map(s=>
       `<div class="chip ${s.id===currentId?"active":""}" onclick="selectSalsa('${s.id}')"><span class="em">${s.emoji||"🧂"}</span>${s.nombre}</div>`).join("");
@@ -179,7 +329,8 @@
         <div class="stepper"><button onclick="adj(-1)">−</button>
           <input type="number" value="${bibs}" min="1" onchange="setBibs(this.value)" /><button onclick="adj(1)">+</button></div>
         <div class="quick"><button onclick="setBibs(1)">1</button><button onclick="setBibs(5)">5</button><button onclick="setBibs(10)">10</button></div>
-        <span class="control-label">≈ ${c.burgers} burgers (${s.sxb||35} g/burger)</span>
+        <span class="control-label">≈ ${c.burgers} burgers</span>
+        <button class="btn btn-sm btn-accent" onclick="addToCesta('${s.id}', bibs)">🧺 Añadir ${bibs} a la cesta</button>
       </div>
       <div class="stats">
         <div class="stat"><div class="stat-val">${eur(c.costeLote)}</div><div class="stat-label">Coste lote (ingred.)</div></div>
@@ -196,7 +347,7 @@
     const hayEj = s.ingredientes.some(i=>i.ejemplo);
     document.getElementById("ingredientes").innerHTML = rows +
       `<div class="ing-foot"><span>Coste ingredientes (${bibs} biberón${bibs>1?"es":""})</span><span>${eur(c.costeLote)}</span></div>` +
-      (hayEj ? `<div class="warn">⚠️ Algunos costes son de <b>ejemplo</b> (faltan en Notion: CANT. PACK). Rellénalos en INVENTARIO y vuelve a sincronizar para costes reales.</div>` : "");
+      (hayEj ? `<div class="warn">⚠️ Algunos costes son de ejemplo (faltan en Notion: CANT. PACK). Rellénalos en INVENTARIO y vuelve a sincronizar.</div>` : "");
 
     const maxS=8;
     document.getElementById("sensorial").innerHTML = Object.entries(s.sensorial||{}).map(([k,v])=>
@@ -206,9 +357,83 @@
     const met = s.metodo||[];
     document.getElementById("card-metodo").style.display = met.length ? "" : "none";
     document.getElementById("metodo").innerHTML = met.map(x=>`<li>${x}</li>`).join("");
-    renderResumen();
+    renderResumen(); refreshBadge();
   }
 
+  // ─── CESTA ──────────────────────────────────────────────────────────────────
+  function addToCesta(id, n){ CESTA[id]=(CESTA[id]||0)+n; saveCesta(); refreshBadge(); toast(`+${n} ${cur().nombre} a la cesta`); }
+  function setCesta(id, n){ n=Math.max(0,Math.min(9999,Math.round(n)||0)); if(n) CESTA[id]=n; else delete CESTA[id]; saveCesta(); renderCesta(); refreshBadge(); }
+  function adjCesta(id, d){ setCesta(id,(CESTA[id]||0)+d); }
+  function vaciarCesta(){ CESTA={}; saveCesta(); renderCesta(); refreshBadge(); toast("Cesta vaciada"); }
+
+  function cestaItems(){ return DATA.salsas.map(s=>({s, units:CESTA[s.id]||0})); }
+  function cestaAgg(){
+    const map=new Map(); let totalUnits=0, totalIng=0, totalBurgers=0; const alerg=new Set();
+    for(const {s,units} of cestaItems()){
+      if(!units) continue;
+      totalUnits += units; totalBurgers += Math.floor((units*1000)/(s.sxb||35));
+      (s.alergenos||[]).forEach(a=>alerg.add(a));
+      for(const i of s.ingredientes){
+        const key=i.nombre+"|"+i.unidad;
+        const e=map.get(key)||{nombre:i.nombre,unidad:i.unidad,cantidad:0,coste:0,ejemplo:false};
+        e.cantidad += i.cantidad*units;
+        e.coste    += i.cantidad*(i.costePorUnidad||0)*units;
+        e.ejemplo   = e.ejemplo || !!i.ejemplo;
+        map.set(key,e);
+        totalIng += i.cantidad*(i.costePorUnidad||0)*units;
+      }
+    }
+    const ings=[...map.values()].sort((a,b)=>a.nombre.localeCompare(b.nombre,"es"));
+    return { ings, totalUnits, totalIng, totalBurgers, alerg:[...alerg] };
+  }
+
+  function renderCesta(){
+    document.getElementById("cesta-comp").innerHTML = DATA.salsas.map(s=>{
+      const n=CESTA[s.id]||0;
+      const sub = n ? eur(calc(s,n).costeLote) : "";
+      return `<div class="cesta-row ${n?"in":""}">
+        <span class="cr-em">${s.emoji||"🧂"}</span>
+        <span class="cr-name">${s.nombre}</span>
+        <div class="stepper">
+          <button onclick="adjCesta('${s.id}',-1)">−</button>
+          <input type="number" value="${n}" min="0" onchange="setCesta('${s.id}',this.value)" />
+          <button onclick="adjCesta('${s.id}',1)">+</button>
+        </div>
+        <span class="cr-sub">${sub}</span>
+      </div>`;
+    }).join("");
+
+    const a=cestaAgg();
+    const ingHTML = a.totalUnits ? a.ings.map(i=>
+      `<div class="ing"><span class="ing-name">${i.nombre}${i.ejemplo?'<span class="ex">coste ej.</span>':""}</span>
+        <span class="ing-qty">${med(i.cantidad,i.unidad)}</span><span class="ing-cost">${eur(i.coste)}</span></div>`).join("") +
+      `<div class="ing-foot"><span>TOTAL cesta (${a.totalUnits} biberones · ≈ ${a.totalBurgers} burgers)</span><span>${eur(a.totalIng)}</span></div>` +
+      (a.alerg.length?`<div class="alg" style="margin-top:14px">${a.alerg.map(x=>`<span>${x}</span>`).join("")}</div>`:"")
+      : `<div class="cesta-empty"><div class="big">🧺</div><p>La cesta está vacía.<br>Añade biberones arriba o desde cada salsa.</p></div>`;
+    document.getElementById("cesta-ing").innerHTML = ingHTML;
+
+    renderCestaResumen(a); refreshBadge();
+  }
+
+  function renderCestaResumen(a){
+    a = a || cestaAgg();
+    const fv = document.getElementById("cesta-fecha").value || new Date().toISOString().slice(0,10);
+    if(!a.totalUnits){ document.getElementById("cesta-resumen").textContent = "(cesta vacía)"; return; }
+    const prep = cestaItems().filter(x=>x.units).map(x=>`· ${x.s.emoji||"🧂"} ${x.s.nombre}: ${x.units} biberones`).join("\n");
+    const ing  = a.ings.map(i=>`· ${i.nombre}: ${med(i.cantidad,i.unidad)}`).join("\n");
+    document.getElementById("cesta-resumen").textContent =
+`CESTA DE PRODUCCIÓN — ${fv}
+Total: ${a.totalUnits} biberones (≈ ${a.totalBurgers} burgers) · ${eur(a.totalIng)}
+${a.alerg.length?"Alérgenos: "+a.alerg.join(", ")+"\n":""}
+— Preparaciones —
+${prep}
+
+— Ingredientes totales (mise en place) —
+${ing}`;
+  }
+  function copiarCesta(){ const txt=document.getElementById("cesta-resumen").textContent; if(txt && txt!=="(cesta vacía)") copy(txt,"Lista de producción copiada"); else toast("La cesta está vacía"); }
+
+  // ─── LOTES ──────────────────────────────────────────────────────────────────
   function getCounter(){ const t=isoDate(new Date());
     if(localStorage.getItem("cb_batch_date")!==t){ localStorage.setItem("cb_batch_date",t); localStorage.setItem("cb_batch_count","0"); return 0; }
     return parseInt(localStorage.getItem("cb_batch_count")||"0",10); }
@@ -243,12 +468,15 @@ ${s.ingredientes.map(i=>`· ${i.nombre}: ${med(i.cantidad*bibs,i.unidad)}`).join
   function fb(t,m){ const a=document.createElement("textarea"); a.value=t; document.body.appendChild(a); a.select(); try{document.execCommand("copy");toast(m);}catch(e){} a.remove(); }
   function renderAutores(){ const a=JSON.parse(localStorage.getItem("cb_autores")||"[]"); document.getElementById("autores").innerHTML=a.map(x=>`<option value="${x}">`).join(""); }
 
+  // ─── INIT ───────────────────────────────────────────────────────────────────
   document.getElementById("lote-fecha").value=new Date().toISOString().slice(0,10);
+  document.getElementById("cesta-fecha").value=new Date().toISOString().slice(0,10);
   document.getElementById("lote-autor").addEventListener("input",renderResumen);
   document.getElementById("lote-fecha").addEventListener("change",renderResumen);
+  document.getElementById("cesta-fecha").addEventListener("change",()=>renderCestaResumen());
   renderAutores();
-  if(!DATA.salsas.length){ document.body.insertAdjacentHTML("beforeend","<p style='color:var(--red)'>No hay datos. Ejecuta <code>node sync-notion.mjs</code>.</p>"); }
-  else render();
+  if(!DATA.salsas.length){ document.querySelector(".app").insertAdjacentHTML("beforeend","<p style='color:var(--red)'>No hay datos. Ejecuta <code>node sync-notion.mjs</code>.</p>"); }
+  else { render(); refreshBadge(); }
   </script>
 </body>
 </html>
